@@ -12,10 +12,10 @@
         "test": "jest --passWithNoTests --runInBand"
     },
     "peerDependencies": {
-        "react": "^17.0.0 || ^18.0.0",
-        "react-dom": "^17.0.0 || ^18.0.0",
         "@types/react": "^17.0.0 || ^18.0.0",
-        "@types/react-dom": "^17.0.0 || ^18.0.0"
+        "@types/react-dom": "^17.0.0 || ^18.0.0",
+        "react": "^17.0.0 || ^18.0.0",
+        "react-dom": "^17.0.0 || ^18.0.0"
     },
     "devDependencies": {
         "@esbuild-plugins/node-resolve": "^0.1.4",
@@ -34,25 +34,25 @@
         "@types/testing-library__jest-dom": "^5.14.3",
         "identity-obj-proxy": "^3.0.0",
         "jest": "^27.5.1",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
         "react-router-dom": "^6.0.0",
         "ts-jest": "^27.1.3",
         "tsup": "^5.11.13",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2",
         "typescript": "^4.7.4"
     },
     "dependencies": {
         "export-to-csv-fix-source-map": "^0.2.1",
         "humanize-string": "^2.1.0",
+        "jose": "^4.8.3",
+        "react-query": "https://github.com/emehmet/react-query-run.git",
         "lodash": "^4.17.21",
         "lodash-es": "^4.17.21",
         "papaparse": "^5.3.0",
         "pluralize": "^8.0.0",
         "qs": "^6.10.1",
-        "react-query": "https://github.com/emehmet/react-query-run.git",
         "tslib": "^2.3.1",
-        "warn-once": "^0.1.0",
-        "jose": "^4.8.3"
+        "warn-once": "^0.1.0"
     },
     "repository": {
         "type": "git",
