@@ -567,8 +567,8 @@ interface RefineProps {
     Title?: React__default.FC<TitleProps>;
     reactQueryClientConfig?: QueryClientConfig;
     reactQueryDevtoolConfig?: any;
-    liveMode?: LiveModeProps["liveMode"];
-    onLiveEvent?: LiveModeProps["onLiveEvent"];
+    liveMode?: LiveModeProps['liveMode'];
+    onLiveEvent?: LiveModeProps['onLiveEvent'];
     children?: React__default.ReactNode;
     disableTelemetry?: boolean;
 }

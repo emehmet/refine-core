@@ -1,3 +1,4227 @@
-import He,{useEffect as hn,useState as vn}from"react";import{useContext as Rr}from"react";import Et from"react";import{useQueryClient as xr}from"react-query";var W=Et.createContext({}),Mt=({children:e,isProvided:r,...t})=>{let{replace:n}=q(),o=xr(),s=()=>{o.invalidateQueries(["useAuthenticated"]),o.invalidateQueries(["getUserIdentity"]),o.invalidateQueries(["usePermissions"])},a=async c=>{var x;try{let T=await((x=t.login)==null?void 0:x.call(t,c));return Promise.resolve(T)}catch(T){return Promise.reject(T)}finally{s()}},d=async c=>{var x;try{let T=await((x=t.logout)==null?void 0:x.call(t,c));return Promise.resolve(T)}catch(T){return Promise.reject(T)}finally{s()}},p=async c=>{var x;try{return await((x=t.checkAuth)==null?void 0:x.call(t,c)),Promise.resolve()}catch(T){return T!=null&&T.redirectPath&&n(T.redirectPath),Promise.reject(T)}finally{s()}};return Et.createElement(W.Provider,{value:{...t,login:a,logout:d,checkAuth:p,isProvided:r}},e)};import{useQuery as gr}from"react-query";var Dr=e=>{let{getPermissions:r}=Rr(W);return gr(["usePermissions"],r!=null?r:()=>Promise.resolve(void 0),{enabled:!!r,...e})};import br from"react";import{useQuery as hr}from"react-query";var tt=({queryOptions:e}={})=>{let{getUserIdentity:r}=br.useContext(W);return hr(["getUserIdentity"],r!=null?r:()=>Promise.resolve(void 0),{enabled:!!r,retry:!1})};import vr from"react";import{useMutation as Pr}from"react-query";var rt=()=>{let{push:e}=q(),{logout:r}=vr.useContext(W),{open:t}=ue();return Pr("useLogout",r,{onSuccess:o=>{o!==!1&&e(o||"/login")},onError:o=>{t==null||t({key:"useLogout-error",type:"error",message:(o==null?void 0:o.name)||"Logout Error",description:(o==null?void 0:o.message)||"Something went wrong during logout"})}})};import Er from"react";import{useMutation as Mr}from"react-query";import Sr from"qs";var ot=()=>{let{replace:e}=q(),{login:r}=Er.useContext(W),{useLocation:t}=S(),{search:n}=t(),{close:o,open:s}=ue(),{to:a}=Sr.parse(n==null?void 0:n.substring(1));return Mr("useLogin",r,{onSuccess:p=>{if(a)return e(a);p!==!1&&e(p||"/"),o==null||o("login-error")},onError:p=>{s==null||s({message:(p==null?void 0:p.name)||"Login Error",description:(p==null?void 0:p.message)||"Invalid credentials",key:"login-error",type:"error"})}})};import{useContext as Ir}from"react";import{useQuery as Lr}from"react-query";var nt=e=>{let{checkAuth:r}=Ir(W);return Lr(["useAuthenticated",e],async()=>{await(r==null?void 0:r(e))},{retry:!1})};import Ur from"react";import{useMutation as Qr}from"react-query";var F=()=>{let{checkError:e}=Ur.useContext(W),{mutate:r}=rt();return Qr("useCheckError",e,{onError:n=>{r({redirectPath:n})}})};import{useContext as Ar}from"react";var Br=()=>{let{isProvided:e}=Ar(W);return e||!1};import{useQuery as kr}from"react-query";var Ue=e=>e/1e3;import Vr from"lodash/zip";import Nr from"lodash/fromPairs";var Ge=(e,r=t=>t)=>{let[t,...n]=e;return n.map(o=>Nr(Vr(t,o))).map((o,s,a)=>r.call(void 0,o,s,a))};import wr from"humanize-string";import St from"pluralize";var De=(e="",r)=>{let t=wr(e);return r==="singular"?St.singular(t):St.plural(t)};var It=(e={})=>e!=null&&e.id?{...e,id:decodeURIComponent(e.id)}:e;var N=(e,r,t)=>{let n=r||"default",o={all:[n],resourceAll:[n,e||""],list:s=>[...o.resourceAll,"list",{...s,...t}],many:s=>[...o.resourceAll,"getMany",s&&s.map(String),{...t}].filter(a=>a!==void 0),detail:s=>[...o.resourceAll,"detail",s==null?void 0:s.toString(),{...t}],logList:s=>["logList",e,s,t].filter(a=>a!==void 0)};return o};var st=(e,r)=>!e||!r?!1:!!e.find(t=>t===r);var be=(e,r)=>{let t;if(e.parentName){let n=r.find(o=>o.name===e.parentName);n!=null&&n.parentName?(t=`${be(n,r)}/${e.name}`,be(n,r)):e.parentName&&(t=`${e.parentName}/${e.name}`)}else t=e.name;return t};var _e=e=>{var a,d,p;let r=[],t={},n={},o,s;for(let c=0;c<e.length;c++){o=e[c];let x=(p=(d=o.route)!=null?d:(a=o.options)==null?void 0:a.route)!=null?p:"";t[x]=o,t[x].children=[],n[o.name]=o,n[o.name].children=[]}for(let c in t)t.hasOwnProperty(c)&&(s=t[c],s.parentName&&n[s.parentName]?n[s.parentName].children.push(s):r.push(s));return r};var Qe=({resource:e,config:r,queryOptions:t,successNotification:n,errorNotification:o,metaData:s,liveMode:a,onLiveEvent:d,liveParams:p,dataProviderName:c})=>{let x=L(),T=N(e,c,s),{getList:f}=x(c),i=P(),{mutate:u}=F(),l=w(),C=(t==null?void 0:t.enabled)===void 0||(t==null?void 0:t.enabled)===!0;return he({resource:e,types:["*"],params:{metaData:s,pagination:r==null?void 0:r.pagination,hasPagination:r==null?void 0:r.hasPagination,sort:r==null?void 0:r.sort,filters:r==null?void 0:r.filters,subscriptionType:"useList",...p},channel:`resources/${e}`,enabled:C,liveMode:a,onLiveEvent:d}),kr(T.list(r),()=>{let{hasPagination:y,...R}=r||{};return f({resource:e,...R,hasPagination:y,metaData:s})},{...t,onSuccess:y=>{var g;(g=t==null?void 0:t.onSuccess)==null||g.call(t,y);let R=typeof n=="function"?n(y,{metaData:s,config:r},e):n;l(R)},onError:y=>{var g;u(y),(g=t==null?void 0:t.onError)==null||g.call(t,y);let R=typeof o=="function"?o(y,{metaData:s,config:r},e):o;l(R,{key:`${e}-useList-notification`,message:i("common:notifications.error",{statusCode:y.statusCode},`Error (status code: ${y.statusCode})`),description:y.message,type:"error"})}})};import{useQuery as Fr}from"react-query";import at from"qs";import Lt from"lodash/unionWith";import Ut from"lodash/differenceWith";var ze=e=>{let{current:r,pageSize:t,sorter:n,filters:o}=at.parse(e.substring(1));return{parsedCurrent:r&&Number(r),parsedPageSize:t&&Number(t),parsedSorter:n!=null?n:[],parsedFilters:o!=null?o:[]}},Kr=e=>{let r=at.stringify(e);return ze(`/${r}`)},qe=e=>{let r={skipNulls:!0,arrayFormat:"indices",encode:!1},{pagination:t,sorter:n,filters:o}=e;return at.stringify({...t||{},sorter:n,filters:o},r)},Qt=(e,r)=>("field"in e?e.field:void 0)==("field"in r?r.field:void 0)&&e.operator==r.operator,At=(e,r)=>e.field==r.field,ve=(e,r,t=[])=>Lt(e,r,t,Qt).filter(n=>n.value!==void 0&&n.value!==null&&(n.operator!=="or"||n.operator==="or"&&n.value.length!==0)),Je=(e,r)=>Lt(e,r,At).filter(t=>t.order!==void 0&&t.order!==null),Ye=(e,r)=>[...Ut(r,e,Qt),...e],je=(e,r)=>[...Ut(r,e,At),...e],Hr=(e,r)=>{if(!r)return;let t=r.find(n=>n.field===e);if(t)return t.order},$r=(e,r,t="eq")=>{let n=r==null?void 0:r.find(o=>{if(o.operator!=="or"){let{operator:s,field:a}=o;return a===e&&s===t}});if(n)return n.value||[]};var Wr=e=>new Promise((r,t)=>{let n=new FileReader,o=()=>{n.result&&(n.removeEventListener("load",o,!1),r(n.result))};n.addEventListener("load",o,!1),n.readAsDataURL(e.originFileObj),n.onerror=s=>(n.removeEventListener("load",o,!1),t(s))});var Ae=({resource:e,id:r,queryOptions:t,successNotification:n,errorNotification:o,metaData:s,liveMode:a,onLiveEvent:d,liveParams:p,dataProviderName:c})=>{let x=L(),T=N(e,c,s),{getOne:f}=x(c),i=P(),{mutate:u}=F(),l=w();return he({resource:e,types:["*"],channel:`resources/${e}`,params:{ids:r?[r]:[],id:r,metaData:s,subscriptionType:"useOne",...p},enabled:t==null?void 0:t.enabled,liveMode:a,onLiveEvent:d}),Fr(T.detail(r),()=>f({resource:e,id:r,metaData:s}),{...t,onSuccess:m=>{var R;(R=t==null?void 0:t.onSuccess)==null||R.call(t,m);let y=typeof n=="function"?n(m,{id:r,metaData:s},e):n;l(y)},onError:m=>{var R;u(m),(R=t==null?void 0:t.onError)==null||R.call(t,m);let y=typeof o=="function"?o(m,{id:r,metaData:s},e):o;l(y,{key:`${r}-${e}-getOne-notification`,message:i("notifications.error",{statusCode:m.statusCode},`Error (status code: ${m.statusCode})`),description:m.message,type:"error"})}})};import{useQuery as Or}from"react-query";var it=({resource:e,ids:r,queryOptions:t,successNotification:n,errorNotification:o,metaData:s,liveMode:a,onLiveEvent:d,liveParams:p,dataProviderName:c})=>{let x=L(),T=N(e,c,s),{getMany:f}=x(c),i=P(),{mutate:u}=F(),l=w(),C=(t==null?void 0:t.enabled)===void 0||(t==null?void 0:t.enabled)===!0;return he({resource:e,types:["*"],params:{ids:r!=null?r:[],metaData:s,subscriptionType:"useMany",...p},channel:`resources/${e}`,enabled:C,liveMode:a,onLiveEvent:d}),Or(T.many(r),()=>f({resource:e,ids:r,metaData:s}),{...t,onSuccess:y=>{var g;(g=t==null?void 0:t.onSuccess)==null||g.call(t,y);let R=typeof n=="function"?n(y,r,e):n;l(R)},onError:y=>{var g;u(y),(g=t==null?void 0:t.onError)==null||g.call(t,y);let R=typeof o=="function"?o(y,r,e):o;l(R,{key:`${r[0]}-${e}-getMany-notification`,message:i("notifications.error",{statusCode:y.statusCode},`Error (status code: ${y.statusCode})`),description:y.message,type:"error"})}})};import{useMutation as Jr,useQueryClient as Yr}from"react-query";import ut,{useReducer as Gr}from"react";import{createPortal as _r}from"react-dom";var Xe=ut.createContext({notifications:[],notificationDispatch:()=>!1}),zr=[],qr=(e,r)=>{switch(r.type){case"ADD":return[...e.filter(t=>t.id!=r.payload.id&&t.resource==r.payload.resource),{...r.payload,isRunning:!0}];case"REMOVE":return e.filter(t=>t.id!=r.payload.id&&t.resource==r.payload.resource);case"DECREASE_NOTIFICATION_SECOND":return e.map(t=>t.id==r.payload.id&&t.resource==r.payload.resource?{...t,seconds:r.payload.seconds-1e3}:t);default:return e}},ct=({children:e})=>{let[r,t]=Gr(qr,zr),n={notifications:r,notificationDispatch:t};return ut.createElement(Xe.Provider,{value:n},e,typeof window<"u"&&_r(ut.createElement(Bt,{notifications:r}),document.body))};import Vt from"pluralize";var pt=()=>{let e=Yr(),r=L(),{mutationMode:t,undoableTimeout:n}=Z(),o=P(),{mutate:s}=F(),a=j(),{log:d}=Ee(),{notificationDispatch:p}=se(),c=w(),x=X();return Jr(({id:f,values:i,resource:u,mutationMode:l,undoableTimeout:C,onCancel:m,metaData:y,dataProviderName:R})=>{let g=l!=null?l:t,h=C!=null?C:n;return g!=="undoable"?r(R).update({resource:u,id:f,variables:i,metaData:y}):new Promise((b,v)=>{let M=()=>{r(R).update({resource:u,id:f,variables:i,metaData:y}).then(E=>b(E)).catch(E=>v(E))},U=()=>{v({message:"mutationCancelled"})};m&&m(U),p({type:"ADD",payload:{id:f,resource:u,cancelMutation:U,doMutation:M,seconds:h,isSilent:!!m}})})},{onMutate:async({resource:f,id:i,mutationMode:u,values:l,dataProviderName:C})=>{let m=N(f,C),y=e.getQueriesData(m.resourceAll),R=u!=null?u:t;return await e.cancelQueries(m.resourceAll,void 0,{silent:!0}),R!=="pessimistic"&&(e.setQueriesData(m.list(),g=>{if(!g)return null;let h=g.data.map(D=>{var b;return((b=D.id)==null?void 0:b.toString())===(i==null?void 0:i.toString())?{id:i,...l}:D});return{...g,data:h}}),e.setQueriesData(m.many(),g=>{if(!g)return null;let h=g.data.map(D=>{var b;return((b=D.id)==null?void 0:b.toString())===(i==null?void 0:i.toString())&&(D={id:i,...l}),D});return{...g,data:h}}),e.setQueriesData(m.detail(i),g=>g?{...g,data:{...g.data,...l}}:null)),{previousQueries:y,queryKey:m}},onSettled:(f,i,{id:u,resource:l,dataProviderName:C,invalidates:m=["list","many","detail"]})=>{x({resource:l,dataProviderName:C,invalidates:m,id:u}),p({type:"REMOVE",payload:{id:u,resource:l}})},onSuccess:(f,{id:i,resource:u,successNotification:l,dataProviderName:C,values:m,metaData:y},R)=>{var E;let g=Vt.singular(u),h=typeof l=="function"?l(f,{id:i,values:m},u):l;c(h,{key:`${i}-${u}-notification`,description:o("notifications.success","Successful"),message:o("notifications.editSuccess",{resource:o(`${u}.${u}`,g)},`Successfully updated ${g}`),type:"success"}),a==null||a({channel:`resources/${u}`,type:"updated",payload:{ids:(E=f.data)!=null&&E.id?[f.data.id]:void 0},date:new Date});let D;if(R){let B=e.getQueryData(R.queryKey.detail(i));D=Object.keys(m).reduce((V,O)=>{var Q;return V[O]=(Q=B==null?void 0:B.data)==null?void 0:Q[O],V},{})}let{fields:b,operation:v,variables:M,...U}=y||{};d==null||d.mutate({action:"update",resource:u,data:m,previousData:D,meta:{id:i,dataProviderName:C,...U}})},onError:(f,{id:i,resource:u,errorNotification:l,values:C},m)=>{if(m)for(let y of m.previousQueries)e.setQueryData(y[0],y[1]);if(f.message!=="mutationCancelled"){s==null||s(f);let y=Vt.singular(u),R=typeof l=="function"?l(f,{id:i,values:C},u):l;c(R,{key:`${i}-${u}-notification`,message:o("notifications.editError",{resource:o(`${u}.${u}`,y),statusCode:f.statusCode},`Error when updating ${y} (status code: ${f.statusCode})`),description:f.message,type:"error"})}}})};import{useMutation as jr}from"react-query";import Nt from"pluralize";var Be=()=>{let{mutate:e}=F(),r=L(),t=X(),n=P(),o=j(),{log:s}=Ee(),a=w();return jr(({resource:p,values:c,metaData:x,dataProviderName:T})=>r(T).create({resource:p,variables:c,metaData:x}),{onSuccess:(p,{resource:c,successNotification:x,dataProviderName:T,invalidates:f=["list","many"],values:i,metaData:u})=>{var h,D,b;let l=Nt.singular(c),C=typeof x=="function"?x(p,i,c):x;a(C,{key:`create-${c}-notification`,message:n("notifications.createSuccess",{resource:n(`${c}.${c}`,l)},`Successfully created ${l}`),description:n("notifications.success","Success"),type:"success"}),t({resource:c,dataProviderName:T,invalidates:f}),o==null||o({channel:`resources/${c}`,type:"created",payload:{ids:(h=p==null?void 0:p.data)!=null&&h.id?[p.data.id]:void 0},date:new Date});let{fields:m,operation:y,variables:R,...g}=u||{};s==null||s.mutate({action:"create",resource:c,data:i,meta:{dataProviderName:T,id:(b=(D=p==null?void 0:p.data)==null?void 0:D.id)!=null?b:void 0,...g}})},onError:(p,{resource:c,errorNotification:x,values:T})=>{e(p);let f=Nt.singular(c),i=typeof x=="function"?x(p,T,c):x;a(i,{key:`create-${c}-notification`,description:p.message,message:n("notifications.createError",{resource:n(`${c}.${c}`,f),statusCode:p.statusCode},`There was an error creating ${f} (status code: ${p.statusCode})`),type:"error"})}})};import{useQueryClient as Xr,useMutation as Zr}from"react-query";import wt from"pluralize";var eo=()=>{let{mutate:e}=F(),r=L(),t=Xr(),{mutationMode:n,undoableTimeout:o}=Z(),{notificationDispatch:s}=se(),a=P(),d=j(),{log:p}=Ee(),c=w(),x=X();return Zr(({id:f,mutationMode:i,undoableTimeout:u,resource:l,onCancel:C,metaData:m,dataProviderName:y,values:R})=>{let g=i!=null?i:n,h=u!=null?u:o;return g!=="undoable"?r(y).deleteOne({resource:l,id:f,metaData:m,variables:R}):new Promise((b,v)=>{let M=()=>{r(y).deleteOne({resource:l,id:f,metaData:m,variables:R}).then(E=>b(E)).catch(E=>v(E))},U=()=>{v({message:"mutationCancelled"})};C&&C(U),s({type:"ADD",payload:{id:f,resource:l,cancelMutation:U,doMutation:M,seconds:h,isSilent:!!C}})})},{onMutate:async({id:f,resource:i,mutationMode:u,dataProviderName:l})=>{let C=N(i,l),m=u!=null?u:n;await t.cancelQueries(C.resourceAll,void 0,{silent:!0});let y=t.getQueriesData(C.resourceAll);return m!=="pessimistic"&&(t.setQueriesData(C.list(),R=>R?{data:R.data.filter(h=>{var D;return((D=h.id)==null?void 0:D.toString())!==f.toString()}),total:R.total-1}:null),t.setQueriesData(C.many(),R=>{if(!R)return null;let g=R.data.filter(h=>{var D;return((D=h.id)==null?void 0:D.toString())!==(f==null?void 0:f.toString())});return{...R,data:g}})),{previousQueries:y,queryKey:C}},onSettled:(f,i,{id:u,resource:l,dataProviderName:C,invalidates:m=["list","many"]})=>{x({resource:l,dataProviderName:C,invalidates:m}),s({type:"REMOVE",payload:{id:u,resource:l}})},onSuccess:(f,{id:i,resource:u,successNotification:l,dataProviderName:C,metaData:m},y)=>{let R=wt.singular(u!=null?u:"");t.removeQueries(y==null?void 0:y.queryKey.detail(i));let g=typeof l=="function"?l(f,i,u):l;c(g,{key:`${i}-${u}-notification`,description:a("notifications.success","Success"),message:a("notifications.deleteSuccess",{resource:a(`${u}.${u}`,R)},`Successfully deleted a ${R}`),type:"success"}),d==null||d({channel:`resources/${u}`,type:"deleted",payload:{ids:i?[i]:[]},date:new Date});let{fields:h,operation:D,variables:b,...v}=m||{};p==null||p.mutate({action:"delete",resource:u,meta:{id:i,dataProviderName:C,...v}}),t.removeQueries(y==null?void 0:y.queryKey.detail(i))},onError:(f,{id:i,resource:u,errorNotification:l},C)=>{if(C)for(let m of C.previousQueries)t.setQueryData(m[0],m[1]);if(f.message!=="mutationCancelled"){e(f);let m=wt.singular(u!=null?u:""),y=typeof l=="function"?l(f,i,u):l;c(y,{key:`${i}-${u}-notification`,message:a("notifications.deleteError",{resource:m,statusCode:f.statusCode},`Error (status code: ${f.statusCode})`),description:f.message,type:"error"})}}})};import{useMutation as to}from"react-query";import ro from"pluralize";var lt=()=>{let e=L(),r=P(),t=j(),n=w(),o=X();return to(({resource:a,values:d,metaData:p,dataProviderName:c})=>e(c).createMany({resource:a,variables:d,metaData:p}),{onSuccess:(a,{resource:d,successNotification:p,dataProviderName:c,invalidates:x=["list","many"],values:T})=>{let f=ro.plural(d),i=typeof p=="function"?p(a,T,d):p;n(i,{key:`createMany-${d}-notification`,message:r("notifications.createSuccess",{resource:r(`${d}.${d}`,d)},`Successfully created ${f}`),description:r("notifications.success","Success"),type:"success"}),o({resource:d,dataProviderName:c,invalidates:x});let u=a==null?void 0:a.data.filter(l=>(l==null?void 0:l.id)!==void 0).map(l=>l.id);t==null||t({channel:`resources/${d}`,type:"created",payload:{ids:u},date:new Date})},onError:(a,{resource:d,errorNotification:p,values:c})=>{let x=typeof p=="function"?p(a,c,d):p;n(x,{key:`createMany-${d}-notification`,description:a.message,message:r("notifications.createError",{resource:r(`${d}.${d}`,d),statusCode:a.statusCode},`There was an error creating ${d} (status code: ${a.statusCode}`),type:"error"})}})};import{useMutation as oo,useQueryClient as no}from"react-query";import kt from"pluralize";var so=()=>{let e=no(),r=L(),t=P(),{mutationMode:n,undoableTimeout:o}=Z(),{mutate:s}=F(),{notificationDispatch:a}=se(),d=j(),p=w(),c=X();return oo(({ids:T,values:f,resource:i,onCancel:u,mutationMode:l,undoableTimeout:C,metaData:m,dataProviderName:y})=>{let R=l!=null?l:n,g=C!=null?C:o;return R!=="undoable"?r(y).updateMany({resource:i,ids:T,variables:f,metaData:m}):new Promise((D,b)=>{let v=()=>{r(y).updateMany({resource:i,ids:T,variables:f,metaData:m}).then(U=>D(U)).catch(U=>b(U))},M=()=>{b({message:"mutationCancelled"})};u&&u(M),a({type:"ADD",payload:{id:T,resource:i,cancelMutation:M,doMutation:v,seconds:g,isSilent:!!u}})})},{onMutate:async({resource:T,ids:f,values:i,mutationMode:u,dataProviderName:l,metaData:C})=>{let m=N(T,l,C),y=u!=null?u:n;await e.cancelQueries(m.resourceAll,void 0,{silent:!0});let R=e.getQueriesData(m.resourceAll);if(y!=="pessimistic"){e.setQueriesData(m.list(),g=>{if(!g)return null;let h=g.data.map(D=>D.id!==void 0&&f.filter(b=>b!==void 0).map(String).includes(D.id.toString())?{...D,...i}:D);return{...g,data:h}}),e.setQueriesData(m.many(),g=>{if(!g)return null;let h=g.data.map(D=>D.id!==void 0&&f.filter(b=>b!==void 0).map(String).includes(D.id.toString())?{...D,...i}:D);return{...g,data:h}});for(let g of f)e.setQueriesData(m.detail(g),h=>{if(!h)return null;let D={...h.data,...i};return{...h,data:D}})}return{previousQueries:R,queryKey:m}},onSettled:(T,f,{ids:i,resource:u,dataProviderName:l})=>{c({resource:u,invalidates:["list","many"],dataProviderName:l}),i.forEach(C=>c({resource:u,invalidates:["detail"],dataProviderName:l,id:C})),a({type:"REMOVE",payload:{id:i,resource:u}})},onSuccess:(T,{ids:f,resource:i,successNotification:u,values:l})=>{let C=kt.singular(i),m=typeof u=="function"?u(T,{ids:f,values:l},i):u;p(m,{key:`${f}-${i}-notification`,description:t("notifications.success","Successful"),message:t("notifications.editSuccess",{resource:t(`${i}.${i}`,i)},`Successfully updated ${C}`),type:"success"}),d==null||d({channel:`resources/${i}`,type:"updated",payload:{ids:f.map(String)},date:new Date})},onError:(T,{ids:f,resource:i,errorNotification:u,values:l},C)=>{if(C)for(let m of C.previousQueries)e.setQueryData(m[0],m[1]);if(T.message!=="mutationCancelled"){s==null||s(T);let m=kt.singular(i),y=typeof u=="function"?u(T,{ids:f,values:l},i):u;p(y,{key:`${f}-${i}-updateMany-error-notification`,message:t("notifications.editError",{resource:m,statusCode:T.statusCode},`Error when updating ${m} (status code: ${T.statusCode})`),description:T.message,type:"error"})}}})};import{useQueryClient as ao,useMutation as io}from"react-query";import uo from"pluralize";var co=()=>{let{mutate:e}=F(),{mutationMode:r,undoableTimeout:t}=Z(),n=L(),{notificationDispatch:o}=se(),s=P(),a=j(),d=w(),p=X(),c=ao();return io(({resource:T,ids:f,mutationMode:i,undoableTimeout:u,onCancel:l,metaData:C,dataProviderName:m,values:y})=>{let R=i!=null?i:r,g=u!=null?u:t;return R!=="undoable"?n(m).deleteMany({resource:T,ids:f,metaData:C,variables:y}):new Promise((D,b)=>{let v=()=>{n(m).deleteMany({resource:T,ids:f,metaData:C,variables:y}).then(U=>D(U)).catch(U=>b(U))},M=()=>{b({message:"mutationCancelled"})};l&&l(M),o({type:"ADD",payload:{id:f,resource:T,cancelMutation:M,doMutation:v,seconds:g,isSilent:!!l}})})},{onMutate:async({ids:T,resource:f,mutationMode:i,dataProviderName:u})=>{let l=N(f,u),C=i!=null?i:r;await c.cancelQueries(l.resourceAll,void 0,{silent:!0});let m=c.getQueriesData(l.resourceAll);if(C!=="pessimistic"){c.setQueriesData(l.list(),y=>y?{data:y.data.filter(g=>g.id&&!T.map(String).includes(g.id.toString())),total:y.total-1}:null),c.setQueriesData(l.many(),y=>{if(!y)return null;let R=y.data.filter(g=>g.id?!T.map(String).includes(g.id.toString()):!1);return{...y,data:R}});for(let y of T)c.setQueriesData(l.detail(y),R=>!R||R.data.id==y?null:{...R})}return{previousQueries:m,queryKey:l}},onSettled:(T,f,{resource:i,ids:u,dataProviderName:l,invalidates:C=["list","many"]})=>{p({resource:i,dataProviderName:l,invalidates:C}),o({type:"REMOVE",payload:{id:u,resource:i}})},onSuccess:(T,{ids:f,resource:i,successNotification:u},l)=>{f.forEach(m=>c.removeQueries(l==null?void 0:l.queryKey.detail(m)));let C=typeof u=="function"?u(T,f,i):u;d(C,{key:`${f}-${i}-notification`,description:s("notifications.success","Success"),message:s("notifications.deleteSuccess",{resource:s(`${i}.${i}`,i)},`Successfully deleted ${i}`),type:"success"}),a==null||a({channel:`resources/${i}`,type:"deleted",payload:{ids:f},date:new Date}),f.forEach(m=>c.removeQueries(l==null?void 0:l.queryKey.detail(m)))},onError:(T,{ids:f,resource:i,errorNotification:u},l)=>{if(l)for(let C of l.previousQueries)c.setQueryData(C[0],C[1]);if(T.message!=="mutationCancelled"){e(T);let C=uo.singular(i),m=typeof u=="function"?u(T,f,i):u;d(m,{key:`${f}-${i}-notification`,message:s("notifications.deleteError",{resource:C,statusCode:T.statusCode},`Error (status code: ${T.statusCode})`),description:T.message,type:"error"})}}})};var po=e=>{let r=L(),{getApiUrl:t}=r(e);return t()};import{useQuery as lo}from"react-query";var mo=({url:e,method:r,config:t,queryOptions:n,successNotification:o,errorNotification:s,metaData:a,dataProviderName:d})=>{let p=L(),{custom:c}=p(d),{mutate:x}=F(),T=P(),f=w();if(c)return lo([d,"custom",r,e,{...t,...a}],()=>c({url:e,method:r,...t,metaData:a}),{...n,onSuccess:u=>{var C;(C=n==null?void 0:n.onSuccess)==null||C.call(n,u);let l=typeof o=="function"?o(u,{...t,...a}):o;f(l)},onError:u=>{var C;x(u),(C=n==null?void 0:n.onError)==null||C.call(n,u);let l=typeof s=="function"?s(u,{...t,...a}):s;f(l,{key:`${r}-notification`,message:T("common:notifications.error",{statusCode:u.statusCode},`Error (status code: ${u.statusCode})`),description:u.message,type:"error"})}});throw Error("Not implemented custom on data provider.")};import{useMutation as fo}from"react-query";var yo=()=>{let e=w(),r=L(),t=P();return fo(({url:o,method:s,values:a,metaData:d,dataProviderName:p,config:c})=>{let{custom:x}=r(p);if(x)return x({url:o,method:s,payload:a,metaData:d,headers:{...c==null?void 0:c.headers}});throw Error("Not implemented custom on data provider.")},{onSuccess:(o,{successNotification:s,config:a,metaData:d})=>{let p=typeof s=="function"?s(o,{...a,...d}):s;e(p)},onError:(o,{errorNotification:s,method:a,config:d,metaData:p})=>{let c=typeof s=="function"?s(o,{...d,...p}):s;e(c,{key:`${a}-notification`,message:t("common:notifications.error",{statusCode:o.statusCode},`Error (status code: ${o.statusCode})`),description:o.message,type:"error"})}})};import{useCallback as To,useContext as xo}from"react";import Kt from"react";var Co=()=>({default:{create:()=>Promise.resolve({data:{id:1}}),createMany:()=>Promise.resolve({data:[]}),deleteOne:()=>Promise.resolve({data:{id:1}}),deleteMany:()=>Promise.resolve({data:[]}),getList:()=>Promise.resolve({data:[],total:0}),getMany:()=>Promise.resolve({data:[]}),getOne:()=>Promise.resolve({data:{id:1}}),update:()=>Promise.resolve({data:{id:1}}),updateMany:()=>Promise.resolve({data:[]}),custom:()=>Promise.resolve({data:{}}),getApiUrl:()=>""}}),Ve=Kt.createContext(Co()),Ht=({children:e,...r})=>{let t;return!r.hasOwnProperty("updateMany")||!r.hasOwnProperty("createMany")?t=r:t={default:r},Kt.createElement(Ve.Provider,{value:t},e)};var L=()=>{let e=xo(Ve);return To(t=>{if(t){if(!e[t])throw new Error(`"${t}" Data provider not found`);return e[t]}if(e.default)return e.default;throw new Error('There is no "default" data provider. Please pass dataProviderName.')},[e])};import{useContext as Gt,useEffect as go}from"react";import{useQueryClient as Do}from"react-query";import $t from"react";var ae=$t.createContext(void 0),Wt=({liveProvider:e,children:r})=>$t.createElement(ae.Provider,{value:e},r);import Ft from"react";import Ro from"react";var dt=({children:e})=>Ro.createElement("div",null,e);var z=Ft.createContext({hasDashboard:!1,mutationMode:"pessimistic",warnWhenUnsavedChanges:!1,syncWithLocation:!1,undoableTimeout:5e3,Title:void 0,Sider:void 0,Header:void 0,Footer:void 0,Layout:dt,OffLayoutArea:void 0,liveMode:"off",onLiveEvent:void 0}),Ot=({hasDashboard:e,mutationMode:r,warnWhenUnsavedChanges:t,syncWithLocation:n,undoableTimeout:o,children:s,DashboardPage:a,Title:d,Layout:p=dt,Header:c,Sider:x,Footer:T,OffLayoutArea:f,LoginPage:i=mt,catchAll:u,liveMode:l="off",onLiveEvent:C})=>Ft.createElement(z.Provider,{value:{hasDashboard:e,mutationMode:r,warnWhenUnsavedChanges:t,syncWithLocation:n,Title:d,undoableTimeout:o,Layout:p,Header:c,Sider:x,Footer:T,OffLayoutArea:f,DashboardPage:a,LoginPage:i,catchAll:u,liveMode:l,onLiveEvent:C}},s);var he=({resource:e,params:r,channel:t,types:n,enabled:o=!0,liveMode:s,onLiveEvent:a})=>{let d=Do(),p=N(e),c=Gt(ae),{liveMode:x,onLiveEvent:T}=Gt(z),f=s!=null?s:x;go(()=>{let i;return f&&f!=="off"&&o&&(i=c==null?void 0:c.subscribe({channel:t,params:{resource:e,...r},types:n,callback:u=>{f==="auto"&&d.invalidateQueries(p.resourceAll),a==null||a(u),T==null||T(u)}})),()=>{i&&(c==null||c.unsubscribe(i))}},[o])};import{useContext as bo}from"react";var _t=e=>{let{liveMode:r}=bo(z);return e!=null?e:r};import{useContext as ho,useEffect as vo}from"react";var Lu=({params:e,channel:r,types:t=["*"],enabled:n=!0,onLiveEvent:o})=>{let s=ho(ae);vo(()=>{let a;return n&&(a=s==null?void 0:s.subscribe({channel:r,params:e,types:t,callback:o})),()=>{a&&(s==null||s.unsubscribe(a))}},[n])};import{useContext as Po}from"react";var j=()=>{let e=Po(ae);return e==null?void 0:e.publish};import{useContext as Eo}from"react";import zt from"react";var ye=zt.createContext({resources:[]}),qt=({resources:e,children:r})=>zt.createElement(ye.Provider,{value:{resources:e}},r);var Me=({resourceName:e,resourceNameOrRouteName:r,recordItemId:t}={})=>{let{resources:n}=Eo(ye),o=G(),{useParams:s}=S(),a=s(),d=o(r!=null?r:a.resource),p=e!=null?e:d.name,c=t!=null?t:a.id;return{resources:n,resource:d,resourceName:p,id:c}};import{useContext as Mo,useCallback as So}from"react";var G=()=>{let{resources:e}=Mo(ye);return So(t=>{let n=e.find(o=>o.route===t);if(!n){let o=e.find(s=>s.name===t);return o!=null?o:{name:t,route:t}}return n},[e])};import{useContext as Io}from"react";var se=()=>{let{notifications:e,notificationDispatch:r}=Io(Xe);return{notifications:e,notificationDispatch:r}};import{useContext as Qo}from"react";import Lo,{createContext as Uo}from"react";var Ne=Uo({}),Jt=({open:e,close:r,children:t})=>Lo.createElement(Ne.Provider,{value:{open:e,close:r}},t);var ue=()=>{let{open:e,close:r}=Qo(Ne);return{open:e,close:r}};import{useCallback as Ao}from"react";var w=()=>{let{open:e}=ue();return Ao((t,n)=>{t!==!1&&(t?e==null||e(t):n&&(e==null||e(n)))},[])};import{useCallback as Bo,useContext as Vo}from"react";import Yt from"react";var ee=Yt.createContext({}),jt=({children:e,i18nProvider:r})=>Yt.createElement(ee.Provider,{value:{i18nProvider:r}},e);var No=()=>{let{i18nProvider:e}=Vo(ee);return Bo(r=>e==null?void 0:e.changeLocale(r),[])};import{useContext as wo,useMemo as ko}from"react";var P=()=>{let{i18nProvider:e}=wo(ee);return ko(()=>{function t(n,o,s){var a,d;return(d=(a=e==null?void 0:e.translate(n,o,s))!=null?a:s)!=null?d:typeof o=="string"&&typeof s>"u"?o:n}return t},[e])};import{useContext as Ko,useCallback as Ho}from"react";var $o=()=>{let{i18nProvider:e}=Ko(ee);return Ho(()=>e==null?void 0:e.getLocale(),[])};import{useContext as Wo}from"react";var Z=()=>{let{mutationMode:e,undoableTimeout:r}=Wo(z);return{mutationMode:e,undoableTimeout:r}};import{useContext as er}from"react";import Xt,{useState as Fo}from"react";var ft=Xt.createContext({}),Zt=({children:e})=>{let[r,t]=Fo(!1);return Xt.createElement(ft.Provider,{value:{warnWhen:r,setWarnWhen:t}},e)};var we=()=>{let{warnWhenUnsavedChanges:e}=er(z),{warnWhen:r,setWarnWhen:t}=er(ft);return{warnWhenUnsavedChanges:e,warnWhen:Boolean(r),setWarnWhen:t!=null?t:()=>{}}};import{useContext as Oo}from"react";var yt=()=>{let{syncWithLocation:e}=Oo(z);return{syncWithLocation:e}};import{useContext as Go}from"react";var _o=()=>{let{Title:e}=Go(z);return e};import{useContext as zo}from"react";var ke=()=>{let{Footer:e,Header:r,Layout:t,OffLayoutArea:n,Sider:o,Title:s,hasDashboard:a,mutationMode:d,syncWithLocation:p,undoableTimeout:c,warnWhenUnsavedChanges:x,DashboardPage:T,LoginPage:f,catchAll:i}=zo(z);return{Footer:e,Header:r,Layout:t,OffLayoutArea:n,Sider:o,Title:s,hasDashboard:a,mutationMode:d,syncWithLocation:p,undoableTimeout:c,warnWhenUnsavedChanges:x,DashboardPage:T,LoginPage:f,catchAll:i}};import{useState as qo}from"react";import{ExportToCsv as Jo}from"export-to-csv-fix-source-map";var lp=({resourceName:e,sorter:r,filters:t,maxItemCount:n,pageSize:o=20,mapData:s=x=>x,exportOptions:a,metaData:d,dataProviderName:p,onError:c}={})=>{let[x,T]=qo(!1),f=G(),i=L(),{useParams:u}=S(),{resource:l}=u(),{name:C}=f(l);e&&(C=e);let m=`${De(C,"plural")}-${new Date().toLocaleString()}`,{getList:y}=i(p);return{isLoading:x,triggerExport:async()=>{T(!0);let g=[],h=1,D=!0;for(;D;)try{let{data:v,total:M}=await y({resource:C,filters:t,sort:r,pagination:{current:h,pageSize:o},metaData:d});h++,g.push(...v),n&&g.length>=n&&(g=g.slice(0,n),D=!1),M===g.length&&(D=!1)}catch(v){T(!1),D=!1,c==null||c(v);return}new Jo({filename:m,useKeysAsHeaders:!0,...a}).generateCsv(g.map(s)),T(!1)}}};import Yo from"react";var Tp=({action:e,resource:r,id:t,onMutationSuccess:n,onMutationError:o,redirect:s,successNotification:a,errorNotification:d,metaData:p,mutationMode:c,liveMode:x,onLiveEvent:T,liveParams:f,undoableTimeout:i,dataProviderName:u,invalidates:l,queryOptions:C}={})=>{var Oe;let{useParams:m}=S(),{resource:y,action:R,id:g}=m(),h=!r||r===y?t!=null?t:g:t,[D,b]=Yo.useState(h),v=r!=null?r:y,M=(Oe=e!=null?e:R)!=null?Oe:"create",E=G()(v),{mutationMode:B}=Z(),V=c!=null?c:B,O=M==="create",Q=M==="edit",I=M==="clone",$=s!=null?s:"list",k=D!==void 0&&(Q||I),xe=Ae({resource:E.name,id:D!=null?D:"",queryOptions:{enabled:k,...C},liveMode:x,onLiveEvent:T,liveParams:f,metaData:p,dataProviderName:u}),{isFetching:pe}=xe,te=Be(),{mutate:$e,isLoading:Re}=te,le=pt(),{mutate:de,isLoading:We}=le,{setWarnWhen:re}=we(),ge=tr();return{...O||I?{formLoading:pe||Re,mutationResult:te,onFinish:async Y=>{re(!1);let oe=ne=>{ge({redirect:$,resource:E,id:ne})};return V!=="pessimistic"&&setTimeout(()=>{oe()}),new Promise((ne,A)=>(V!=="pessimistic"&&ne(),$e({values:Y,resource:E.name,successNotification:a,errorNotification:d,metaData:p,dataProviderName:u,invalidates:l},{onSuccess:(K,ie,me)=>{var Pt;n&&n(K,Y,me);let fe=(Pt=K==null?void 0:K.data)==null?void 0:Pt.id;oe(fe),ne(K)},onError:(K,ie,me)=>{if(o)return o(K,Y,me);A()}})))}}:{formLoading:pe||We,mutationResult:le,onFinish:async Y=>{re(!1);let oe={id:D!=null?D:"",values:Y,resource:E.name,mutationMode:V,undoableTimeout:i,successNotification:a,errorNotification:d,metaData:p,dataProviderName:u,invalidates:l},ne=()=>{b(h),ge({redirect:$,resource:E,id:D})};return V!=="pessimistic"&&setTimeout(()=>{ne()}),new Promise((A,K)=>(V!=="pessimistic"&&A(),setTimeout(()=>{de(oe,{onSuccess:(ie,me,fe)=>{n&&n(ie,Y,fe),V==="pessimistic"&&ne(),A(ie)},onError:(ie,me,fe)=>{if(o)return o(ie,Y,fe);K()}})})))}},queryResult:xe,id:D,setId:b,redirect:(Y,oe)=>{ge({redirect:Y!==void 0?Y:Q?"list":"edit",resource:E,id:oe!=null?oe:D})}}};import{useCallback as jo}from"react";var tr=()=>{let{show:e,edit:r,list:t,create:n}=q();return jo(({redirect:s,resource:a,id:d})=>{if(s&&a.route)return a.canShow&&s==="show"&&d?e(a.route,d):a.canEdit&&s==="edit"&&d?r(a.route,d):a.canCreate&&s==="create"?n(a.route):t(a.route,"push")},[])};var q=()=>{let{useHistory:e}=S(),r=e(),t=G(),n=(m,y="push")=>{y==="push"?r.push(m):r.replace(m)},o=m=>`/${t(m).route}/create`,s=(m,y)=>{let R=t(m),g=encodeURIComponent(y);return`/${R.route}/edit/${g}`},a=(m,y)=>{let R=t(m),g=encodeURIComponent(y);return`/${R.route}/clone/${g}`},d=(m,y)=>{let R=t(m),g=encodeURIComponent(y);return`/${R.route}/show/${g}`},p=m=>`/${t(m).route}`;return{create:(m,y="push")=>{n(o(m),y)},createUrl:o,edit:(m,y,R="push")=>{n(s(m,y),R)},editUrl:s,clone:(m,y,R="push")=>{n(a(m,y),R)},cloneUrl:a,show:(m,y,R="push")=>{n(d(m,y),R)},showUrl:d,list:(m,y="push")=>{n(p(m),y)},listUrl:p,push:(m,y)=>{r.push(m,y)},replace:(m,y)=>{r.replace(m,y)},goBack:()=>{r.goBack()}}};import{useState as Xo}from"react";var Ip=({resource:e,id:r,successNotification:t,errorNotification:n,metaData:o,liveMode:s,onLiveEvent:a,dataProviderName:d}={})=>{let{useParams:p}=S(),{resource:c,id:x}=p(),T=!e||e===c?r!=null?r:x:r,[f,i]=Xo(T),l=G()(e!=null?e:c);return{queryResult:Ae({resource:l.name,id:f!=null?f:"",queryOptions:{enabled:f!==void 0},successNotification:t,errorNotification:n,metaData:o,liveMode:s,onLiveEvent:a,dataProviderName:d}),showId:f,setShowId:i}};import{useEffect as Zo,useState as Ct}from"react";import{parse as en}from"papaparse";import tn from"lodash/chunk";var Kp=({resourceName:e,mapData:r=d=>d,paparseOptions:t,batchSize:n=Number.MAX_SAFE_INTEGER,onFinish:o,metaData:s,onProgress:a}={})=>{let[d,p]=Ct(0),[c,x]=Ct(0),[T,f]=Ct(!1),i=G(),{useParams:u}=S(),{resource:l}=u(),{name:C}=i(e!=null?e:l),m=lt(),y=Be(),R;n===1?R=y:R=m;let g=()=>{x(0),p(0),f(!1)},h=b=>{let v={succeeded:b.filter(M=>M.type==="success"),errored:b.filter(M=>M.type==="error")};o==null||o(v),f(!1)};Zo(()=>{a==null||a({totalAmount:c,processedAmount:d})},[c,d]);let D=({file:b})=>(g(),new Promise(v=>{f(!0),en(b,{complete:async({data:M})=>{let U=Ge(M,r);if(x(U.length),n===1){let E=await Promise.all(U.map(B=>({response:y.mutateAsync({resource:C,values:B,successNotification:!1,errorNotification:!1,metaData:s}),value:B})).map(({response:B,value:V})=>B.then(({data:O})=>(p(Q=>Q+1),{response:[O],type:"success",request:[V]})).catch(O=>({response:[O],type:"error",request:[V]}))));v(E)}else{let E=await Promise.all(tn(U,n).map(B=>({response:m.mutateAsync({resource:C,values:B,successNotification:!1,errorNotification:!1,metaData:s}),currentBatchLength:B.length,value:B})).map(({response:B,value:V,currentBatchLength:O})=>B.then(Q=>(p(I=>I+O),{response:Q.data,type:"success",request:V})).catch(Q=>({response:[Q],type:"error",request:V}))));v(E)}},...t})}).then(v=>(h(v),v)));return{inputProps:{type:"file",accept:".csv",onChange:b=>{b.target.files&&b.target.files.length>0&&D({file:b.target.files[0]})}},mutationResult:R,isLoading:T,handleChange:D}};import{useCallback as rr,useState as rn}from"react";var Wp=({defaultVisible:e=!1}={})=>{let[r,t]=rn(e),n=rr(()=>t(!0),[r]),o=rr(()=>t(!1),[r]);return{visible:r,show:n,close:o}};import{useContext as nn}from"react";import or from"react";var on={useHistory:()=>!1,useLocation:()=>!1,useParams:()=>({}),Prompt:()=>null,Link:()=>null},Ke=or.createContext(on),nr=({children:e,useHistory:r,useLocation:t,useParams:n,Prompt:o,Link:s,routes:a})=>or.createElement(Ke.Provider,{value:{useHistory:r,useLocation:t,useParams:n,Prompt:o,Link:s,routes:a}},e);var S=()=>{let{useHistory:e,useLocation:r,useParams:t,Prompt:n,Link:o,routes:s}=nn(Ke);return{useHistory:e,useLocation:r,useParams:t,Prompt:n,Link:o,routes:s}};import{useContext as sn}from"react";import{useQuery as an}from"react-query";import sr from"react";var Ce=sr.createContext({}),ar=({can:e,children:r})=>sr.createElement(Ce.Provider,{value:{can:e}},r);var ir=({action:e,resource:r,params:t,queryOptions:n})=>{let{can:o}=sn(Ce),s=an(["useCan",{action:e,resource:r,params:t}],()=>{var a;return(a=o==null?void 0:o({action:e,resource:r,params:t}))!=null?a:{can:!0}},{enabled:typeof o<"u",...n,retry:!1});return typeof o>"u"?{data:{can:!0}}:s};import{useContext as un}from"react";var cl=()=>{let{can:e}=un(Ce);return{can:e}};import{useMemo as cn,useState as Tt}from"react";import pn from"lodash/uniqBy";import ln from"lodash/debounce";var xl=e=>{let[r,t]=Tt([]),[n,o]=Tt([]),[s,a]=Tt([]),{resource:d,sort:p,filters:c=[],optionLabel:x="title",optionValue:T="id",debounce:f=300,successNotification:i,errorNotification:u,defaultValueQueryOptions:l,queryOptions:C,fetchSize:m,liveMode:y,defaultValue:R=[],onLiveEvent:g,onSearch:h,liveParams:D,metaData:b,dataProviderName:v}=e,M=Array.isArray(R)?R:[R],U=I=>{a(I.data.map($=>({label:$[x],value:$[T]})))},E=l!=null?l:C,B=it({resource:d,ids:M,queryOptions:{enabled:M.length>0,...E,onSuccess:I=>{var $;U(I),($=E==null?void 0:E.onSuccess)==null||$.call(E,I)}},metaData:b,liveMode:"off",dataProviderName:v}),V=I=>{o(I.data.map($=>({label:$[x],value:$[T]})))},O=Qe({resource:d,config:{sort:p,filters:c.concat(r),pagination:m?{pageSize:m}:void 0},queryOptions:{...C,onSuccess:I=>{var $;V(I),($=C==null?void 0:C.onSuccess)==null||$.call(C,I)}},successNotification:i,errorNotification:u,metaData:b,liveMode:y,liveParams:D,onLiveEvent:g,dataProviderName:v}),Q=I=>{if(!I){t([]);return}t(h?h(I):[{field:x,operator:"contains",value:I}])};return{queryResult:O,defaultValueQueryResult:B,options:cn(()=>pn([...n,...s],"value"),[n,s]),onSearch:ln(Q,f)}};import{useMemo as dn,useState as Ze,useEffect as ur}from"react";import cr from"lodash/differenceWith";import pr from"lodash/isEqual";var mn=[],fn=[];function Pl({initialCurrent:e=1,initialPageSize:r=10,hasPagination:t=!0,initialSorter:n,permanentSorter:o=fn,defaultSetFilterBehavior:s="merge",initialFilter:a,permanentFilter:d=mn,syncWithLocation:p,resource:c,successNotification:x,errorNotification:T,queryOptions:f,liveMode:i,onLiveEvent:u,liveParams:l,metaData:C,dataProviderName:m}={}){var ne;let{syncWithLocation:y}=yt(),R=p!=null?p:y,{useLocation:g,useParams:h}=S(),{search:D,pathname:b}=g(),v=_t(i),{parsedCurrent:M,parsedPageSize:U,parsedSorter:E,parsedFilters:B}=ze(D),V=M||e,O=U||r,Q=E.length?E:n,I=B.length?B:a,{resource:$}=h(),{push:k}=q(),pe=G()(c!=null?c:$),[te,$e]=Ze(je(o,Q!=null?Q:[])),[Re,le]=Ze(Ye(d,I!=null?I:[])),[de,We]=Ze(V),[re,ge]=Ze(O),Dt=({pagination:{current:A,pageSize:K},sorter:ie,filters:me})=>{let fe=qe({pagination:{pageSize:K,current:A},sorter:ie,filters:me});return`${b}?${fe}`};ur(()=>{D===""&&(We(V),ge(O),$e(je(o,Q!=null?Q:[])),le(Ye(d,I!=null?I:[])))},[D]),ur(()=>{if(R){let A=qe({...t?{pagination:{pageSize:re,current:de}}:{},sorter:cr(te,o,pr),filters:cr(Re,d,pr)});return k(`${b}?${A}`)}},[R,de,re,te,Re]);let Fe=Qe({resource:pe.name,config:{hasPagination:t,pagination:{current:de,pageSize:re},filters:ve(d,Re),sort:Je(o,te)},queryOptions:f,successNotification:x,errorNotification:T,metaData:C,liveMode:v,liveParams:l,onLiveEvent:u,dataProviderName:m}),bt=A=>{le(K=>ve(d,A,K))},ht=A=>{le(ve(d,A))},vt=A=>{le(K=>ve(d,A(K)))},Oe=(A,K=s)=>{typeof A=="function"?vt(A):K==="replace"?ht(A):bt(A)},Y=A=>{$e(()=>Je(o,A))},oe=dn(()=>{var A,K;return t?{current:de,setCurrent:We,pageSize:re,setPageSize:ge,pageCount:re?Math.ceil(((K=(A=Fe.data)==null?void 0:A.total)!=null?K:0)/re):1}:{current:void 0,setCurrent:void 0,pageSize:void 0,setPageSize:void 0,pageCount:void 0}},[t,de,re,(ne=Fe.data)==null?void 0:ne.total]);return{tableQueryResult:Fe,sorter:te,setSorter:Y,filters:Re,setFilters:Oe,...oe,createLinkForSyncWithLocation:Dt}}import{useContext as mr}from"react";import{useMutation as fr,useQueryClient as yn}from"react-query";import lr from"react";var Te=lr.createContext({}),dr=({create:e,get:r,update:t,children:n})=>lr.createElement(Te.Provider,{value:{create:e,get:r,update:t}},n);var Ee=()=>{let e=yn(),r=mr(Te),{resources:t}=mr(ye),{data:n,refetch:o,isLoading:s}=tt({queryOptions:{enabled:!!r}}),a=fr(async p=>{var f,i,u;let c=t.find(l=>l.name===p.resource),x=(i=(f=c==null?void 0:c.options)==null?void 0:f.auditLog)==null?void 0:i.permissions;if(x&&!st(x,p.action))return;let T;return s&&(T=await o()),await((u=r.create)==null?void 0:u.call(r,{...p,author:n!=null?n:T==null?void 0:T.data}))}),d=fr(async p=>{var c;return await((c=r.update)==null?void 0:c.call(r,p))},{onSuccess:p=>{if(p!=null&&p.resource){let c=N(p==null?void 0:p.resource);e.invalidateQueries(c.logList())}}});return{log:a,rename:d}};import{useContext as Cn}from"react";import{useQuery as Tn}from"react-query";var Fl=({resource:e,action:r,meta:t,author:n,metaData:o,queryOptions:s})=>{let{get:a}=Cn(Te),d=N(e,void 0,o);return Tn(d.logList(t),()=>{var c;return(c=a==null?void 0:a({resource:e,action:r,author:n,meta:t,metaData:o}))!=null?c:Promise.resolve([])},{enabled:typeof a<"u",...s,retry:!1})};import{useCallback as xn}from"react";import{useQueryClient as Rn}from"react-query";var X=()=>{let e=Rn();return xn(({resource:t,dataProviderName:n,invalidates:o,id:s})=>{if(o===!1)return;let a=N(t,n);o.forEach(d=>{switch(d){case"all":e.invalidateQueries(a.all);break;case"list":e.invalidateQueries(a.list());break;case"many":e.invalidateQueries(a.many());break;case"resourceAll":e.invalidateQueries(a.resourceAll);break;case"detail":e.invalidateQueries(a.detail(s||""));break;default:break}})},[])};import{useContext as gn}from"react";import et from"humanize-string";import Dn from"warn-once";var nd=()=>{var p;let{useParams:e}=S(),{i18nProvider:r}=gn(ee),t=P(),{resources:n,resource:o}=Me(),{action:s}=e(),a=[];if(!(o!=null&&o.name))return{breadcrumbs:a};let d=c=>{var T;let x=n.find(f=>f.name===c);x&&(x.parentName&&d(x.parentName),a.push({label:(T=x.label)!=null?T:t(`${x.name}.${x.name}`,et(x.name)),href:x.list?`/${x.route}`:void 0,icon:x.icon}))};if(o.parentName&&d(o.parentName),a.push({label:(p=o.label)!=null?p:t(`${o.name}.${o.name}`,et(o.name)),href:o.list?`/${o.route}`:void 0,icon:o.icon}),s){let c=`actions.${s}`,x=t(c);typeof r<"u"&&x===c?(Dn(!0,`[useBreadcrumb]: Breadcrumb missing translate key for the "${s}" action. Please add "actions.${s}" key to your translation file.
-For more information, see https://refine.dev/docs/core/hooks/useBreadcrumb/#i18n-support`),a.push({label:t(`buttons.${s}`,et(s))})):a.push({label:t(c,et(s))})}return{breadcrumbs:a}};import Se from"react";var bn=()=>{let{resources:e}=Me(),r=P(),{useLocation:t,useParams:n}=S(),o=t(),s=n(),{hasDashboard:a}=ke(),d=Se.useMemo(()=>{let i=e.find(l=>(o==null?void 0:o.pathname)===`/${l.route}`);i||(i=e.find(l=>(s==null?void 0:s.resource)===l.route));let u;return i!=null&&i.route?u=`/${i==null?void 0:i.route}`:o.pathname==="/"?u="/":u=o==null?void 0:o.pathname,u},[e,o,s]),p=Se.useMemo(()=>e.map(i=>{var l,C;let u=`/${i.route}`;return{...i,icon:i.icon,route:u,key:(l=i.key)!=null?l:u,label:(C=i.label)!=null?C:r(`${i.name}.${i.name}`,De(i.name,"plural"))}}),[e,a]),c=Se.useMemo(()=>_e(p),[p]),x=Se.useCallback((i,u,l=!1)=>{let C=u.find(m=>l?m.name===i:m.route===i);if(C){let m=[];return l&&C.route&&m.unshift(C.route),C.parentName&&m.unshift(...x(C.parentName,u,!0)),m}return[]},[]),T=Se.useMemo(()=>x(d,p),[d,p]);return Se.useMemo(()=>{let i=u=>u.reduce((l,C)=>C.children.length>0?[...l,{...C,children:i(C.children)}]:typeof C.list<"u"?[...l,C]:l,[]);return{defaultOpenKeys:T,selectedKey:d,menuItems:i(c)}},[T,d,c])};var Pn=()=>{let[e,r]=vn(),{push:t}=q(),n=P(),o=["edit","create","show"],{useParams:s}=S(),a=s(),d=G();return hn(()=>{if(a.resource){let p=d(a.resource);a.action&&o.includes(a.action)&&!p[a.action]&&r(n("pages.error.info",{action:a.action,resource:a.resource},`You may have forgotten to add the "${a.action}" component to "${a.resource}" resource.`))}},[a]),He.createElement(He.Fragment,null,He.createElement("h1",null,n("pages.error.404",void 0,"Sorry, the page you visited does not exist.")),e&&He.createElement("p",null,e),He.createElement("button",{onClick:()=>t("/")},n("pages.error.backHome",void 0,"Back Home")))};import _,{useState as yr}from"react";var mt=()=>{let[e,r]=yr(""),[t,n]=yr(""),o=P(),{mutate:s}=ot();return _.createElement(_.Fragment,null,_.createElement("h1",null,o("pages.login.title","Sign in your account")),_.createElement("form",{onSubmit:a=>{a.preventDefault(),s({username:e,password:t})}},_.createElement("table",null,_.createElement("tbody",null,_.createElement("tr",null,_.createElement("td",null,o("pages.login.username",void 0,"username"),":"),_.createElement("td",null,_.createElement("input",{type:"text",size:20,autoCorrect:"off",spellCheck:!1,autoCapitalize:"off",autoFocus:!0,required:!0,value:e,onChange:a=>r(a.target.value)}))),_.createElement("tr",null,_.createElement("td",null,o("pages.login.password",void 0,"password"),":"),_.createElement("td",null,_.createElement("input",{type:"password",required:!0,size:20,value:t,onChange:a=>n(a.target.value)}))))),_.createElement("br",null),_.createElement("input",{type:"submit",value:"login"})))};import J from"react";var xt=()=>J.createElement(J.Fragment,null,J.createElement("h1",null,"Welcome on board"),J.createElement("p",null,"Your configuration is completed."),J.createElement("p",null,"Now you can get started by adding your resources to the"," ",J.createElement("code",null,"`resources`")," property of ",J.createElement("code",null,"`<Refine>`")),J.createElement("div",{style:{display:"flex",gap:8}},J.createElement("a",{href:"https://refine.dev",target:"_blank",rel:"noreferrer"},J.createElement("button",null,"Documentation")),J.createElement("a",{href:"https://refine.dev/docs/examples/tutorial",target:"_blank",rel:"noreferrer"},J.createElement("button",null,"Examples")),J.createElement("a",{href:"https://discord.gg/refine",target:"_blank",rel:"noreferrer"},J.createElement("button",null,"Community"))));import H from"react";import{QueryClientProvider as Un,QueryClient as Qn}from"react-query";import{ReactQueryDevtools as An}from"react-query/devtools";import{useEffect as Mn}from"react";import{CompactEncrypt as Sn,importJWK as In}from"jose";import{useContext as ce}from"react";var En="3.54.0",Cr=()=>{let e=ce(W),r=ce(Te),t=ce(ae),n=ce(Ke),o=ce(Ve),{i18nProvider:s}=ce(ee),a=ce(Ne),d=ce(Ce),{resources:p}=Me(),c=e.isProvided,x=!!r.create||!!r.get||!!r.update,T=!!(t!=null&&t.publish)||!!(t!=null&&t.subscribe)||!!(t!=null&&t.unsubscribe),f=!!n.useHistory||!!n.Link||!!n.Prompt||!!n.useLocation||!!n.useParams,i=!!o,u=!!(s!=null&&s.changeLocale)||!!(s!=null&&s.getLocale)||!!(s!=null&&s.translate),l=!!a.close||!!a.open,C=!!d.can;return{providers:{auth:c,auditLog:x,live:T,router:f,data:i,i18n:u,notification:l,accessControl:C},version:En,resourceCount:p.length}};var Ln={kty:"RSA",e:"AQAB",use:"enc",alg:"RSA-OAEP-256",n:"glC_mSwk1VqaofnOPXK3HEC5njb4uHZM5_shFdQLRn_898dxVUMK7HkyOgoVOtEsNxDBjwK_KPbSEYX_lyfrJ6ONjnxPJ2_d0W_1ZwdwT_gr5ofFLz5Bm7WbVHcKDK1j5iMYsqUJbFVQ-KXzAswae2iiqzCBKLD4y-fLsIvOUGZliERMMi54hRPqVj6p0xhJEvH22jZ5rk48KJBNvjBBuLes1qk5cehirDHnh07A8Alr3Pe6Qk7xpyC_mUvMqX99JvYThyvjQMMPEXHLJY9m1g-sgHJPlMkxMoLUd5JI1v6QMLezhq2F-bNXiRgXJgT0ew3g-H_PKpWmMQmSRtgiEw"},Tr=()=>{let e=Cr();return Mn(()=>{typeof window>"u"||(async()=>{let r=await In(Ln),t=await new Sn(new TextEncoder().encode(JSON.stringify(e))).setProtectedHeader({alg:"RSA-OAEP-256",enc:"A256GCM"}).encrypt(r);fetch("https://telemetry.refine.dev/send",{headers:{Accept:"application/text","Content-Type":"application/text"},method:"POST",body:t})})()},[]),null};var Bn=({authProvider:e,dataProvider:r,routerProvider:t,notificationProvider:n,accessControlProvider:o,auditLogProvider:s,resources:a,DashboardPage:d,ReadyPage:p,LoginPage:c,catchAll:x,children:T,liveProvider:f,i18nProvider:i,mutationMode:u="pessimistic",syncWithLocation:l=!1,warnWhenUnsavedChanges:C=!1,undoableTimeout:m=5e3,Title:y,Layout:R,Sider:g,Header:h,Footer:D,OffLayoutArea:b,reactQueryClientConfig:v,reactQueryDevtoolConfig:M,liveMode:U,onLiveEvent:E,disableTelemetry:B=!1})=>{var $;let V=new Qn({...v,defaultOptions:{...v==null?void 0:v.defaultOptions,queries:{refetchOnWindowFocus:!1,keepPreviousData:!0,...($=v==null?void 0:v.defaultOptions)==null?void 0:$.queries}}}),O=typeof n=="function"?n():n!=null?n:{},Q=[];if(a==null||a.map(k=>{var xe,pe,te;Q.push({key:k.key,name:k.name,label:(xe=k.options)==null?void 0:xe.label,icon:k.icon,route:(te=(pe=k.options)==null?void 0:pe.route)!=null?te:be(k,a),canCreate:!!k.create,canEdit:!!k.edit,canShow:!!k.show,canDelete:k.canDelete,create:k.create,show:k.show,list:k.list,edit:k.edit,options:k.options,parentName:k.parentName})}),Q.length===0)return p?H.createElement(p,null):H.createElement(xt,null);let{RouterComponent:I=H.Fragment}=t;return H.createElement(Un,{client:V},H.createElement(Jt,{...O},H.createElement(Mt,{...e!=null?e:{},isProvided:Boolean(e)},H.createElement(Ht,{...r},H.createElement(Wt,{liveProvider:f},H.createElement(nr,{...t},H.createElement(qt,{resources:Q},H.createElement(jt,{i18nProvider:i},H.createElement(ar,{...o!=null?o:{}},H.createElement(dr,{...s!=null?s:{}},H.createElement(ct,null,H.createElement(Ot,{mutationMode:u,warnWhenUnsavedChanges:C,syncWithLocation:l,Title:y,undoableTimeout:m,catchAll:x,DashboardPage:d,LoginPage:c,Layout:R,Sider:g,Footer:D,Header:h,OffLayoutArea:b,hasDashboard:!!d,liveMode:U,onLiveEvent:E},H.createElement(Zt,null,H.createElement(I,null,T,!B&&H.createElement(Tr,null),H.createElement(Rt,null)))))))))))))),H.createElement(An,{initialIsOpen:!1,position:"bottom-right",...M}))};import{useEffect as Vn}from"react";var Bt=({notifications:e})=>{let r=P(),{notificationDispatch:t}=se(),{open:n}=ue(),o=()=>{e.forEach(s=>{s.isRunning===!0&&(s.seconds===0&&s.doMutation(),s.isSilent||n==null||n({key:`${s.id}-${s.resource}-notification`,type:"progress",message:r("notifications.undoable",{seconds:Ue(s.seconds)},`You have ${Ue(s.seconds)} seconds to undo`),cancelMutation:s.cancelMutation,undoableTimeout:Ue(s.seconds)}),s.seconds>0&&setTimeout(()=>{t({type:"DECREASE_NOTIFICATION_SECOND",payload:{id:s.id,seconds:s.seconds,resource:s.resource}})},1e3))})};return Vn(()=>{o()},[e]),null};import gt,{useEffect as Nn}from"react";var wn=({children:e,Layout:r,Sider:t,Header:n,Title:o,Footer:s,OffLayoutArea:a})=>{let{Layout:d,Footer:p,Header:c,Sider:x,Title:T,OffLayoutArea:f}=ke(),i=r!=null?r:d;return gt.createElement(i,{Sider:t!=null?t:x,Header:n!=null?n:c,Footer:s!=null?s:p,Title:o!=null?o:T,OffLayoutArea:a!=null?a:f},e,gt.createElement(kn,null))},kn=()=>{let{Prompt:e}=S(),r=P(),{warnWhen:t,setWarnWhen:n}=we(),o=s=>(s.preventDefault(),s.returnValue=r("warnWhenUnsavedChanges","Are you sure you want to leave? You have unsaved changes."),s.returnValue);return Nn(()=>(t&&window.addEventListener("beforeunload",o),window.removeEventListener("beforeunload",o)),[t]),gt.createElement(e,{when:t,message:r("warnWhenUnsavedChanges","Are you sure you want to leave? You have unsaved changes."),setWarnWhen:n})};import Ie from"react";var Kn=({children:e,fallback:r,loading:t})=>{let{isSuccess:n,isLoading:o,isError:s}=nt(),{replace:a}=q(),{useLocation:d}=S(),{pathname:p,search:c}=d();if(o)return Ie.createElement(Ie.Fragment,null,t)||null;if(s){if(!r){let x=`${p}${c}`;return p.includes("/login")||a(`/login?to=${encodeURIComponent(x)}`),null}return Ie.createElement(Ie.Fragment,null,r)}return n?Ie.createElement(Ie.Fragment,null,e):null};import{useContext as Hn,useEffect as $n}from"react";var Rt=()=>{let{useLocation:e}=S(),{checkAuth:r}=Hn(W),t=e();return $n(()=>{r==null||r().catch(()=>!1)},[t==null?void 0:t.pathname]),null};import Le from"react";var Wn=({resource:e,action:r,params:t,fallback:n,children:o,...s})=>{let{data:a}=ir({resource:e,action:r,params:t});return a!=null&&a.can?Le.isValidElement(o)?Le.cloneElement(o,s):Le.createElement(Le.Fragment,null,o):(a==null?void 0:a.can)===!1?Le.createElement(Le.Fragment,null,n!=null?n:null):null};export{Kn as Authenticated,Wn as CanAccess,Pn as ErrorComponent,wn as LayoutWrapper,mt as LoginPage,xt as ReadyPage,Bn as Refine,Rt as RouteChangeHandler,Bt as UndoableQueue,_e as createTreeView,Wr as file2Base64,$r as getDefaultFilter,Hr as getDefaultSortOrder,It as handleUseParams,Ge as importCSVMapper,ze as parseTableParams,Kr as parseTableParamsFromQuery,be as routeGenerator,Ye as setInitialFilters,je as setInitialSorters,qe as stringifyTableParams,ve as unionFilters,Je as unionSorters,po as useApiUrl,nt as useAuthenticated,nd as useBreadcrumb,ir as useCan,cl as useCanWithoutCache,se as useCancelNotification,F as useCheckError,Be as useCreate,lt as useCreateMany,mo as useCustom,yo as useCustomMutation,L as useDataProvider,eo as useDelete,co as useDeleteMany,lp as useExport,Tp as useForm,tt as useGetIdentity,$o as useGetLocale,w as useHandleNotification,Kp as useImport,X as useInvalidate,Br as useIsExistAuthentication,Qe as useList,_t as useLiveMode,Ee as useLog,Fl as useLogList,ot as useLogin,rt as useLogout,it as useMany,bn as useMenu,Wp as useModal,Z as useMutationMode,q as useNavigation,ue as useNotification,Ae as useOne,Dr as usePermissions,j as usePublish,tr as useRedirectionAfterSubmission,ke as useRefineContext,Me as useResource,he as useResourceSubscription,G as useResourceWithRoute,S as useRouterContext,xl as useSelect,No as useSetLocale,Ip as useShow,Lu as useSubscription,yt as useSyncWithLocation,Pl as useTable,_o as useTitle,P as useTranslate,pt as useUpdate,so as useUpdateMany,we as useWarnAboutChange,De as userFriendlyResourceName};
+// src/components/pages/error/index.tsx
+import React22, { useEffect as useEffect6, useState as useState9 } from "react";
+
+// src/hooks/auth/usePermissions/index.ts
+import { useContext } from "react";
+
+// src/contexts/auth/index.tsx
+import React from "react";
+import { useQueryClient } from "react-query";
+var AuthContext = React.createContext({});
+var AuthContextProvider = ({ children, isProvided, ...authOperations }) => {
+  const { replace } = useNavigation();
+  const queryClient = useQueryClient();
+  const invalidateAuthStore = () => {
+    queryClient.invalidateQueries(["useAuthenticated"]);
+    queryClient.invalidateQueries(["getUserIdentity"]);
+    queryClient.invalidateQueries(["usePermissions"]);
+  };
+  const loginFunc = async (params) => {
+    var _a;
+    try {
+      const result = await ((_a = authOperations.login) == null ? void 0 : _a.call(authOperations, params));
+      return Promise.resolve(result);
+    } catch (error) {
+      return Promise.reject(error);
+    } finally {
+      invalidateAuthStore();
+    }
+  };
+  const logoutFunc = async (params) => {
+    var _a;
+    try {
+      const redirectPath = await ((_a = authOperations.logout) == null ? void 0 : _a.call(authOperations, params));
+      return Promise.resolve(redirectPath);
+    } catch (error) {
+      return Promise.reject(error);
+    } finally {
+      invalidateAuthStore();
+    }
+  };
+  const checkAuthFunc = async (params) => {
+    var _a;
+    try {
+      await ((_a = authOperations.checkAuth) == null ? void 0 : _a.call(authOperations, params));
+      return Promise.resolve();
+    } catch (error) {
+      if (error == null ? void 0 : error.redirectPath) {
+        replace(error.redirectPath);
+      }
+      return Promise.reject(error);
+    } finally {
+      invalidateAuthStore();
+    }
+  };
+  return /* @__PURE__ */ React.createElement(AuthContext.Provider, {
+    value: {
+      ...authOperations,
+      login: loginFunc,
+      logout: logoutFunc,
+      checkAuth: checkAuthFunc,
+      isProvided
+    }
+  }, children);
+};
+
+// src/hooks/auth/usePermissions/index.ts
+import { useQuery } from "react-query";
+var usePermissions = (options) => {
+  const { getPermissions } = useContext(AuthContext);
+  const queryResponse = useQuery(
+    ["usePermissions"],
+    getPermissions != null ? getPermissions : () => Promise.resolve(void 0),
+    {
+      enabled: !!getPermissions,
+      ...options
+    }
+  );
+  return queryResponse;
+};
+
+// src/hooks/auth/useGetIdentity/index.ts
+import React2 from "react";
+import { useQuery as useQuery2 } from "react-query";
+var useGetIdentity = ({
+  queryOptions
+} = {}) => {
+  const { getUserIdentity } = React2.useContext(AuthContext);
+  const queryResponse = useQuery2(
+    ["getUserIdentity"],
+    getUserIdentity != null ? getUserIdentity : () => Promise.resolve(void 0),
+    {
+      enabled: !!getUserIdentity,
+      retry: false
+    }
+  );
+  return queryResponse;
+};
+
+// src/hooks/auth/useLogout/index.ts
+import React3 from "react";
+import { useMutation } from "react-query";
+var useLogout = () => {
+  const { push } = useNavigation();
+  const { logout: logoutFromContext } = React3.useContext(AuthContext);
+  const { open } = useNotification();
+  const queryResponse = useMutation(
+    "useLogout",
+    logoutFromContext,
+    {
+      onSuccess: (redirectPathFromAuth) => {
+        if (redirectPathFromAuth !== false) {
+          if (redirectPathFromAuth) {
+            push(redirectPathFromAuth);
+          } else {
+            push("/login");
+          }
+        }
+      },
+      onError: (error) => {
+        open == null ? void 0 : open({
+          key: "useLogout-error",
+          type: "error",
+          message: (error == null ? void 0 : error.name) || "Logout Error",
+          description: (error == null ? void 0 : error.message) || "Something went wrong during logout"
+        });
+      }
+    }
+  );
+  return queryResponse;
+};
+
+// src/hooks/auth/useLogin/index.ts
+import React4 from "react";
+import { useMutation as useMutation2 } from "react-query";
+import qs from "qs";
+var useLogin = () => {
+  const { replace } = useNavigation();
+  const { login: loginFromContext } = React4.useContext(AuthContext);
+  const { useLocation } = useRouterContext();
+  const { search } = useLocation();
+  const { close, open } = useNotification();
+  const { to } = qs.parse(search == null ? void 0 : search.substring(1));
+  const queryResponse = useMutation2(
+    "useLogin",
+    loginFromContext,
+    {
+      onSuccess: (redirectPathFromAuth) => {
+        if (to) {
+          return replace(to);
+        }
+        if (redirectPathFromAuth !== false) {
+          if (redirectPathFromAuth) {
+            replace(redirectPathFromAuth);
+          } else {
+            replace("/");
+          }
+        }
+        close == null ? void 0 : close("login-error");
+      },
+      onError: (error) => {
+        open == null ? void 0 : open({
+          message: (error == null ? void 0 : error.name) || "Login Error",
+          description: (error == null ? void 0 : error.message) || "Invalid credentials",
+          key: "login-error",
+          type: "error"
+        });
+      }
+    }
+  );
+  return queryResponse;
+};
+
+// src/hooks/auth/useAuthenticated/index.ts
+import { useContext as useContext2 } from "react";
+import { useQuery as useQuery3 } from "react-query";
+var useAuthenticated = (params) => {
+  const { checkAuth } = useContext2(AuthContext);
+  const queryResponse = useQuery3(
+    ["useAuthenticated", params],
+    async () => {
+      await (checkAuth == null ? void 0 : checkAuth(params));
+    },
+    {
+      retry: false
+    }
+  );
+  return queryResponse;
+};
+
+// src/hooks/auth/useCheckError/index.ts
+import React5 from "react";
+import { useMutation as useMutation3 } from "react-query";
+var useCheckError = () => {
+  const { checkError: checkErrorFromContext } = React5.useContext(AuthContext);
+  const { mutate: logout } = useLogout();
+  const queryResponse = useMutation3("useCheckError", checkErrorFromContext, {
+    onError: (redirectPath) => {
+      logout({ redirectPath });
+    }
+  });
+  return queryResponse;
+};
+
+// src/hooks/auth/useIsExistAuthentication.ts
+import { useContext as useContext3 } from "react";
+var useIsExistAuthentication = () => {
+  const { isProvided } = useContext3(AuthContext);
+  return isProvided || false;
+};
+
+// src/hooks/data/useList.ts
+import { useQuery as useQuery4 } from "react-query";
+
+// src/definitions/helpers/userFriendlySeconds/index.ts
+var userFriendlySecond = (miliseconds) => {
+  return miliseconds / 1e3;
+};
+
+// src/definitions/helpers/importCSVMapper/index.ts
+import zip from "lodash/zip";
+import fromPairs from "lodash/fromPairs";
+var importCSVMapper = (data, mapData = (item) => item) => {
+  const [headers, ...body] = data;
+  return body.map((entry) => fromPairs(zip(headers, entry))).map(
+    (item, index, array) => mapData.call(void 0, item, index, array)
+  );
+};
+
+// src/definitions/helpers/userFriendlyResourceName/index.ts
+import humanizeString from "humanize-string";
+import pluralize from "pluralize";
+var userFriendlyResourceName = (resource = "", type) => {
+  const humanizeResource = humanizeString(resource);
+  if (type === "singular") {
+    return pluralize.singular(humanizeResource);
+  }
+  return pluralize.plural(humanizeResource);
+};
+
+// src/definitions/helpers/handleUseParams/index.tsx
+var handleUseParams = (params = {}) => {
+  if (params == null ? void 0 : params.id) {
+    return {
+      ...params,
+      id: decodeURIComponent(params.id)
+    };
+  }
+  return params;
+};
+
+// src/definitions/helpers/queryKeys/index.ts
+var queryKeys = (resource, dataProviderName, metaData) => {
+  const providerName = dataProviderName || "default";
+  const keys = {
+    all: [providerName],
+    resourceAll: [providerName, resource || ""],
+    list: (config) => [
+      ...keys.resourceAll,
+      "list",
+      { ...config, ...metaData }
+    ],
+    many: (ids) => [
+      ...keys.resourceAll,
+      "getMany",
+      ids && ids.map(String),
+      { ...metaData }
+    ].filter((item) => item !== void 0),
+    detail: (id) => [
+      ...keys.resourceAll,
+      "detail",
+      id == null ? void 0 : id.toString(),
+      { ...metaData }
+    ],
+    logList: (meta) => ["logList", resource, meta, metaData].filter(
+      (item) => item !== void 0
+    )
+  };
+  return keys;
+};
+
+// src/definitions/helpers/hasPermission/index.ts
+var hasPermission = (permissions, action) => {
+  if (!permissions || !action) {
+    return false;
+  }
+  return !!permissions.find((i) => i === action);
+};
+
+// src/definitions/helpers/routeGenerator/index.ts
+var routeGenerator = (item, resourcesFromProps) => {
+  let route;
+  if (item.parentName) {
+    const hasParentName = resourcesFromProps.find(
+      (p) => p.name === item.parentName
+    );
+    if (hasParentName == null ? void 0 : hasParentName.parentName) {
+      const routePrefix = routeGenerator(
+        hasParentName,
+        resourcesFromProps
+      );
+      route = `${routePrefix}/${item.name}`;
+      routeGenerator(hasParentName, resourcesFromProps);
+    } else if (item.parentName) {
+      route = `${item.parentName}/${item.name}`;
+    }
+  } else {
+    route = item.name;
+  }
+  return route;
+};
+
+// src/definitions/helpers/treeView/createTreeView/index.ts
+var createTreeView = (resources) => {
+  var _a, _b, _c;
+  const tree = [];
+  const resourcesRouteObject = {};
+  const resourcesNameObject = {};
+  let parent;
+  let child;
+  for (let i = 0; i < resources.length; i++) {
+    parent = resources[i];
+    const route = (_c = (_b = parent.route) != null ? _b : (_a = parent.options) == null ? void 0 : _a.route) != null ? _c : "";
+    resourcesRouteObject[route] = parent;
+    resourcesRouteObject[route]["children"] = [];
+    resourcesNameObject[parent.name] = parent;
+    resourcesNameObject[parent.name]["children"] = [];
+  }
+  for (const name in resourcesRouteObject) {
+    if (resourcesRouteObject.hasOwnProperty(name)) {
+      child = resourcesRouteObject[name];
+      if (child.parentName && resourcesNameObject[child.parentName]) {
+        resourcesNameObject[child.parentName]["children"].push(child);
+      } else {
+        tree.push(child);
+      }
+    }
+  }
+  return tree;
+};
+
+// src/hooks/data/useList.ts
+var useList = ({
+  resource,
+  config,
+  queryOptions,
+  successNotification,
+  errorNotification,
+  metaData,
+  liveMode,
+  onLiveEvent,
+  liveParams,
+  dataProviderName
+}) => {
+  const dataProvider = useDataProvider();
+  const queryKey = queryKeys(resource, dataProviderName, metaData);
+  const { getList } = dataProvider(dataProviderName);
+  const translate = useTranslate();
+  const { mutate: checkError } = useCheckError();
+  const handleNotification = useHandleNotification();
+  const isEnabled = (queryOptions == null ? void 0 : queryOptions.enabled) === void 0 || (queryOptions == null ? void 0 : queryOptions.enabled) === true;
+  useResourceSubscription({
+    resource,
+    types: ["*"],
+    params: {
+      metaData,
+      pagination: config == null ? void 0 : config.pagination,
+      hasPagination: config == null ? void 0 : config.hasPagination,
+      sort: config == null ? void 0 : config.sort,
+      filters: config == null ? void 0 : config.filters,
+      subscriptionType: "useList",
+      ...liveParams
+    },
+    channel: `resources/${resource}`,
+    enabled: isEnabled,
+    liveMode,
+    onLiveEvent
+  });
+  const queryResponse = useQuery4(
+    queryKey.list(config),
+    () => {
+      const { hasPagination, ...restConfig } = config || {};
+      return getList({
+        resource,
+        ...restConfig,
+        hasPagination,
+        metaData
+      });
+    },
+    {
+      ...queryOptions,
+      onSuccess: (data) => {
+        var _a;
+        (_a = queryOptions == null ? void 0 : queryOptions.onSuccess) == null ? void 0 : _a.call(queryOptions, data);
+        const notificationConfig = typeof successNotification === "function" ? successNotification(
+          data,
+          { metaData, config },
+          resource
+        ) : successNotification;
+        handleNotification(notificationConfig);
+      },
+      onError: (err) => {
+        var _a;
+        checkError(err);
+        (_a = queryOptions == null ? void 0 : queryOptions.onError) == null ? void 0 : _a.call(queryOptions, err);
+        const notificationConfig = typeof errorNotification === "function" ? errorNotification(err, { metaData, config }, resource) : errorNotification;
+        handleNotification(notificationConfig, {
+          key: `${resource}-useList-notification`,
+          message: translate(
+            "common:notifications.error",
+            { statusCode: err.statusCode },
+            `Error (status code: ${err.statusCode})`
+          ),
+          description: err.message,
+          type: "error"
+        });
+      }
+    }
+  );
+  return queryResponse;
+};
+
+// src/hooks/data/useOne.ts
+import { useQuery as useQuery5 } from "react-query";
+
+// src/definitions/table/index.ts
+import qs2 from "qs";
+import unionWith from "lodash/unionWith";
+import differenceWith from "lodash/differenceWith";
+var parseTableParams = (url) => {
+  const { current, pageSize, sorter, filters } = qs2.parse(
+    url.substring(1)
+  );
+  return {
+    parsedCurrent: current && Number(current),
+    parsedPageSize: pageSize && Number(pageSize),
+    parsedSorter: sorter != null ? sorter : [],
+    parsedFilters: filters != null ? filters : []
+  };
+};
+var parseTableParamsFromQuery = (params) => {
+  const url = qs2.stringify(params);
+  return parseTableParams(`/${url}`);
+};
+var stringifyTableParams = (params) => {
+  const options = {
+    skipNulls: true,
+    arrayFormat: "indices",
+    encode: false
+  };
+  const { pagination, sorter, filters } = params;
+  const queryString = qs2.stringify(
+    { ...pagination ? pagination : {}, sorter, filters },
+    options
+  );
+  return queryString;
+};
+var compareFilters = (left, right) => {
+  return ("field" in left ? left.field : void 0) == ("field" in right ? right.field : void 0) && left.operator == right.operator;
+};
+var compareSorters = (left, right) => left.field == right.field;
+var unionFilters = (permanentFilter, newFilters, prevFilters = []) => unionWith(permanentFilter, newFilters, prevFilters, compareFilters).filter(
+  (crudFilter) => crudFilter.value !== void 0 && crudFilter.value !== null && (crudFilter.operator !== "or" || crudFilter.operator === "or" && crudFilter.value.length !== 0)
+);
+var unionSorters = (permanentSorter, newSorters) => unionWith(permanentSorter, newSorters, compareSorters).filter(
+  (crudSorter) => crudSorter.order !== void 0 && crudSorter.order !== null
+);
+var setInitialFilters = (permanentFilter, defaultFilter) => [
+  ...differenceWith(defaultFilter, permanentFilter, compareFilters),
+  ...permanentFilter
+];
+var setInitialSorters = (permanentSorter, defaultSorter) => [
+  ...differenceWith(defaultSorter, permanentSorter, compareSorters),
+  ...permanentSorter
+];
+var getDefaultSortOrder = (columnName, sorter) => {
+  if (!sorter) {
+    return void 0;
+  }
+  const sortItem = sorter.find((item) => item.field === columnName);
+  if (sortItem) {
+    return sortItem.order;
+  }
+  return void 0;
+};
+var getDefaultFilter = (columnName, filters, operatorType = "eq") => {
+  const filter = filters == null ? void 0 : filters.find((filter2) => {
+    if (filter2.operator !== "or") {
+      const { operator, field } = filter2;
+      return field === columnName && operator === operatorType;
+    }
+    return void 0;
+  });
+  if (filter) {
+    return filter.value || [];
+  }
+  return void 0;
+};
+
+// src/definitions/upload/file2Base64/index.ts
+var file2Base64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    const resultHandler = () => {
+      if (reader.result) {
+        reader.removeEventListener("load", resultHandler, false);
+        resolve(reader.result);
+      }
+    };
+    reader.addEventListener("load", resultHandler, false);
+    reader.readAsDataURL(file.originFileObj);
+    reader.onerror = (error) => {
+      reader.removeEventListener("load", resultHandler, false);
+      return reject(error);
+    };
+  });
+};
+
+// src/hooks/data/useOne.ts
+var useOne = ({
+  resource,
+  id,
+  queryOptions,
+  successNotification,
+  errorNotification,
+  metaData,
+  liveMode,
+  onLiveEvent,
+  liveParams,
+  dataProviderName
+}) => {
+  const dataProvider = useDataProvider();
+  const queryKey = queryKeys(resource, dataProviderName, metaData);
+  const { getOne } = dataProvider(dataProviderName);
+  const translate = useTranslate();
+  const { mutate: checkError } = useCheckError();
+  const handleNotification = useHandleNotification();
+  useResourceSubscription({
+    resource,
+    types: ["*"],
+    channel: `resources/${resource}`,
+    params: {
+      ids: id ? [id] : [],
+      id,
+      metaData,
+      subscriptionType: "useOne",
+      ...liveParams
+    },
+    enabled: queryOptions == null ? void 0 : queryOptions.enabled,
+    liveMode,
+    onLiveEvent
+  });
+  const queryResponse = useQuery5(
+    queryKey.detail(id),
+    () => getOne({ resource, id, metaData }),
+    {
+      ...queryOptions,
+      onSuccess: (data) => {
+        var _a;
+        (_a = queryOptions == null ? void 0 : queryOptions.onSuccess) == null ? void 0 : _a.call(queryOptions, data);
+        const notificationConfig = typeof successNotification === "function" ? successNotification(data, { id, metaData }, resource) : successNotification;
+        handleNotification(notificationConfig);
+      },
+      onError: (err) => {
+        var _a;
+        checkError(err);
+        (_a = queryOptions == null ? void 0 : queryOptions.onError) == null ? void 0 : _a.call(queryOptions, err);
+        const notificationConfig = typeof errorNotification === "function" ? errorNotification(err, { id, metaData }, resource) : errorNotification;
+        handleNotification(notificationConfig, {
+          key: `${id}-${resource}-getOne-notification`,
+          message: translate(
+            "notifications.error",
+            { statusCode: err.statusCode },
+            `Error (status code: ${err.statusCode})`
+          ),
+          description: err.message,
+          type: "error"
+        });
+      }
+    }
+  );
+  return queryResponse;
+};
+
+// src/hooks/data/useMany.ts
+import { useQuery as useQuery6 } from "react-query";
+var useMany = ({
+  resource,
+  ids,
+  queryOptions,
+  successNotification,
+  errorNotification,
+  metaData,
+  liveMode,
+  onLiveEvent,
+  liveParams,
+  dataProviderName
+}) => {
+  const dataProvider = useDataProvider();
+  const queryKey = queryKeys(resource, dataProviderName, metaData);
+  const { getMany } = dataProvider(dataProviderName);
+  const translate = useTranslate();
+  const { mutate: checkError } = useCheckError();
+  const handleNotification = useHandleNotification();
+  const isEnabled = (queryOptions == null ? void 0 : queryOptions.enabled) === void 0 || (queryOptions == null ? void 0 : queryOptions.enabled) === true;
+  useResourceSubscription({
+    resource,
+    types: ["*"],
+    params: {
+      ids: ids != null ? ids : [],
+      metaData,
+      subscriptionType: "useMany",
+      ...liveParams
+    },
+    channel: `resources/${resource}`,
+    enabled: isEnabled,
+    liveMode,
+    onLiveEvent
+  });
+  const queryResponse = useQuery6(
+    queryKey.many(ids),
+    () => getMany({ resource, ids, metaData }),
+    {
+      ...queryOptions,
+      onSuccess: (data) => {
+        var _a;
+        (_a = queryOptions == null ? void 0 : queryOptions.onSuccess) == null ? void 0 : _a.call(queryOptions, data);
+        const notificationConfig = typeof successNotification === "function" ? successNotification(data, ids, resource) : successNotification;
+        handleNotification(notificationConfig);
+      },
+      onError: (err) => {
+        var _a;
+        checkError(err);
+        (_a = queryOptions == null ? void 0 : queryOptions.onError) == null ? void 0 : _a.call(queryOptions, err);
+        const notificationConfig = typeof errorNotification === "function" ? errorNotification(err, ids, resource) : errorNotification;
+        handleNotification(notificationConfig, {
+          key: `${ids[0]}-${resource}-getMany-notification`,
+          message: translate(
+            "notifications.error",
+            { statusCode: err.statusCode },
+            `Error (status code: ${err.statusCode})`
+          ),
+          description: err.message,
+          type: "error"
+        });
+      }
+    }
+  );
+  return queryResponse;
+};
+
+// src/hooks/data/useUpdate.ts
+import { useMutation as useMutation4, useQueryClient as useQueryClient2 } from "react-query";
+
+// src/contexts/undoableQueue/undoableQueueContext.tsx
+import React6, { useReducer } from "react";
+import { createPortal } from "react-dom";
+var UndoableQueueContext = React6.createContext({
+  notifications: [],
+  notificationDispatch: () => false
+});
+var initialState = [];
+var undoableQueueReducer = (state, action) => {
+  switch (action.type) {
+    case "ADD" /* ADD */:
+      return [
+        ...state.filter(
+          (notificationItem) => notificationItem.id != action.payload.id && notificationItem.resource == action.payload.resource
+        ),
+        {
+          ...action.payload,
+          isRunning: true
+        }
+      ];
+    case "REMOVE" /* REMOVE */:
+      return state.filter(
+        (notificationItem) => notificationItem.id != action.payload.id && notificationItem.resource == action.payload.resource
+      );
+    case "DECREASE_NOTIFICATION_SECOND" /* DECREASE_NOTIFICATION_SECOND */:
+      return state.map((notificationItem) => {
+        if (notificationItem.id == action.payload.id && notificationItem.resource == action.payload.resource) {
+          return {
+            ...notificationItem,
+            seconds: action.payload.seconds - 1e3
+          };
+        }
+        return notificationItem;
+      });
+    default:
+      return state;
+  }
+};
+var UndoableQueueContextProvider = ({ children }) => {
+  const [notifications, notificationDispatch] = useReducer(
+    undoableQueueReducer,
+    initialState
+  );
+  const notificationData = { notifications, notificationDispatch };
+  return /* @__PURE__ */ React6.createElement(UndoableQueueContext.Provider, {
+    value: notificationData
+  }, children, typeof window !== "undefined" && createPortal(
+    /* @__PURE__ */ React6.createElement(UndoableQueue, {
+      notifications
+    }),
+    document.body
+  ));
+};
+
+// src/hooks/data/useUpdate.ts
+import pluralize2 from "pluralize";
+var useUpdate = () => {
+  const queryClient = useQueryClient2();
+  const dataProvider = useDataProvider();
+  const {
+    mutationMode: mutationModeContext,
+    undoableTimeout: undoableTimeoutContext
+  } = useMutationMode();
+  const translate = useTranslate();
+  const { mutate: checkError } = useCheckError();
+  const publish = usePublish();
+  const { log } = useLog();
+  const { notificationDispatch } = useCancelNotification();
+  const handleNotification = useHandleNotification();
+  const invalidateStore = useInvalidate();
+  const mutation = useMutation4(
+    ({
+      id,
+      values,
+      resource,
+      mutationMode,
+      undoableTimeout,
+      onCancel,
+      metaData,
+      dataProviderName
+    }) => {
+      const mutationModePropOrContext = mutationMode != null ? mutationMode : mutationModeContext;
+      const undoableTimeoutPropOrContext = undoableTimeout != null ? undoableTimeout : undoableTimeoutContext;
+      if (!(mutationModePropOrContext === "undoable")) {
+        return dataProvider(dataProviderName).update(
+          {
+            resource,
+            id,
+            variables: values,
+            metaData
+          }
+        );
+      }
+      const updatePromise = new Promise(
+        (resolve, reject) => {
+          const doMutation = () => {
+            dataProvider(dataProviderName).update({
+              resource,
+              id,
+              variables: values,
+              metaData
+            }).then((result) => resolve(result)).catch((err) => reject(err));
+          };
+          const cancelMutation = () => {
+            reject({ message: "mutationCancelled" });
+          };
+          if (onCancel) {
+            onCancel(cancelMutation);
+          }
+          notificationDispatch({
+            type: "ADD" /* ADD */,
+            payload: {
+              id,
+              resource,
+              cancelMutation,
+              doMutation,
+              seconds: undoableTimeoutPropOrContext,
+              isSilent: !!onCancel
+            }
+          });
+        }
+      );
+      return updatePromise;
+    },
+    {
+      onMutate: async ({
+        resource,
+        id,
+        mutationMode,
+        values,
+        dataProviderName
+      }) => {
+        const queryKey = queryKeys(resource, dataProviderName);
+        const previousQueries = queryClient.getQueriesData(queryKey.resourceAll);
+        const mutationModePropOrContext = mutationMode != null ? mutationMode : mutationModeContext;
+        await queryClient.cancelQueries(
+          queryKey.resourceAll,
+          void 0,
+          {
+            silent: true
+          }
+        );
+        if (!(mutationModePropOrContext === "pessimistic")) {
+          queryClient.setQueriesData(
+            queryKey.list(),
+            (previous) => {
+              if (!previous) {
+                return null;
+              }
+              const data = previous.data.map((record) => {
+                var _a;
+                if (((_a = record.id) == null ? void 0 : _a.toString()) === (id == null ? void 0 : id.toString())) {
+                  return {
+                    id,
+                    ...values
+                  };
+                }
+                return record;
+              });
+              return {
+                ...previous,
+                data
+              };
+            }
+          );
+          queryClient.setQueriesData(
+            queryKey.many(),
+            (previous) => {
+              if (!previous) {
+                return null;
+              }
+              const data = previous.data.map((record) => {
+                var _a;
+                if (((_a = record.id) == null ? void 0 : _a.toString()) === (id == null ? void 0 : id.toString())) {
+                  record = {
+                    id,
+                    ...values
+                  };
+                }
+                return record;
+              });
+              return {
+                ...previous,
+                data
+              };
+            }
+          );
+          queryClient.setQueriesData(
+            queryKey.detail(id),
+            (previous) => {
+              if (!previous) {
+                return null;
+              }
+              return {
+                ...previous,
+                data: {
+                  ...previous.data,
+                  ...values
+                }
+              };
+            }
+          );
+        }
+        return {
+          previousQueries,
+          queryKey
+        };
+      },
+      onSettled: (_data, _error, {
+        id,
+        resource,
+        dataProviderName,
+        invalidates = ["list", "many", "detail"]
+      }) => {
+        invalidateStore({
+          resource,
+          dataProviderName,
+          invalidates,
+          id
+        });
+        notificationDispatch({
+          type: "REMOVE" /* REMOVE */,
+          payload: { id, resource }
+        });
+      },
+      onSuccess: (data, {
+        id,
+        resource,
+        successNotification,
+        dataProviderName,
+        values,
+        metaData
+      }, context) => {
+        var _a;
+        const resourceSingular = pluralize2.singular(resource);
+        const notificationConfig = typeof successNotification === "function" ? successNotification(data, { id, values }, resource) : successNotification;
+        handleNotification(notificationConfig, {
+          key: `${id}-${resource}-notification`,
+          description: translate(
+            "notifications.success",
+            "Successful"
+          ),
+          message: translate(
+            "notifications.editSuccess",
+            {
+              resource: translate(
+                `${resource}.${resource}`,
+                resourceSingular
+              )
+            },
+            `Successfully updated ${resourceSingular}`
+          ),
+          type: "success"
+        });
+        publish == null ? void 0 : publish({
+          channel: `resources/${resource}`,
+          type: "updated",
+          payload: {
+            ids: ((_a = data.data) == null ? void 0 : _a.id) ? [data.data.id] : void 0
+          },
+          date: new Date()
+        });
+        let previousData;
+        if (context) {
+          const queryData = queryClient.getQueryData(context.queryKey.detail(id));
+          previousData = Object.keys(values).reduce(
+            (acc, item) => {
+              var _a2;
+              acc[item] = (_a2 = queryData == null ? void 0 : queryData.data) == null ? void 0 : _a2[item];
+              return acc;
+            },
+            {}
+          );
+        }
+        const { fields, operation, variables, ...rest } = metaData || {};
+        log == null ? void 0 : log.mutate({
+          action: "update",
+          resource,
+          data: values,
+          previousData,
+          meta: {
+            id,
+            dataProviderName,
+            ...rest
+          }
+        });
+      },
+      onError: (err, { id, resource, errorNotification, values }, context) => {
+        if (context) {
+          for (const query of context.previousQueries) {
+            queryClient.setQueryData(query[0], query[1]);
+          }
+        }
+        if (err.message !== "mutationCancelled") {
+          checkError == null ? void 0 : checkError(err);
+          const resourceSingular = pluralize2.singular(resource);
+          const notificationConfig = typeof errorNotification === "function" ? errorNotification(err, { id, values }, resource) : errorNotification;
+          handleNotification(notificationConfig, {
+            key: `${id}-${resource}-notification`,
+            message: translate(
+              "notifications.editError",
+              {
+                resource: translate(
+                  `${resource}.${resource}`,
+                  resourceSingular
+                ),
+                statusCode: err.statusCode
+              },
+              `Error when updating ${resourceSingular} (status code: ${err.statusCode})`
+            ),
+            description: err.message,
+            type: "error"
+          });
+        }
+      }
+    }
+  );
+  return mutation;
+};
+
+// src/hooks/data/useCreate.ts
+import { useMutation as useMutation5 } from "react-query";
+import pluralize3 from "pluralize";
+var useCreate = () => {
+  const { mutate: checkError } = useCheckError();
+  const dataProvider = useDataProvider();
+  const invalidateStore = useInvalidate();
+  const translate = useTranslate();
+  const publish = usePublish();
+  const { log } = useLog();
+  const handleNotification = useHandleNotification();
+  const mutation = useMutation5(
+    ({
+      resource,
+      values,
+      metaData,
+      dataProviderName
+    }) => {
+      return dataProvider(dataProviderName).create({
+        resource,
+        variables: values,
+        metaData
+      });
+    },
+    {
+      onSuccess: (data, {
+        resource,
+        successNotification: successNotificationFromProp,
+        dataProviderName,
+        invalidates = ["list", "many"],
+        values,
+        metaData
+      }) => {
+        var _a, _b, _c;
+        const resourceSingular = pluralize3.singular(resource);
+        const notificationConfig = typeof successNotificationFromProp === "function" ? successNotificationFromProp(data, values, resource) : successNotificationFromProp;
+        handleNotification(notificationConfig, {
+          key: `create-${resource}-notification`,
+          message: translate(
+            "notifications.createSuccess",
+            {
+              resource: translate(
+                `${resource}.${resource}`,
+                resourceSingular
+              )
+            },
+            `Successfully created ${resourceSingular}`
+          ),
+          description: translate("notifications.success", "Success"),
+          type: "success"
+        });
+        invalidateStore({
+          resource,
+          dataProviderName,
+          invalidates
+        });
+        publish == null ? void 0 : publish({
+          channel: `resources/${resource}`,
+          type: "created",
+          payload: {
+            ids: ((_a = data == null ? void 0 : data.data) == null ? void 0 : _a.id) ? [data.data.id] : void 0
+          },
+          date: new Date()
+        });
+        const { fields, operation, variables, ...rest } = metaData || {};
+        log == null ? void 0 : log.mutate({
+          action: "create",
+          resource,
+          data: values,
+          meta: {
+            dataProviderName,
+            id: (_c = (_b = data == null ? void 0 : data.data) == null ? void 0 : _b.id) != null ? _c : void 0,
+            ...rest
+          }
+        });
+      },
+      onError: (err, {
+        resource,
+        errorNotification: errorNotificationFromProp,
+        values
+      }) => {
+        checkError(err);
+        const resourceSingular = pluralize3.singular(resource);
+        const notificationConfig = typeof errorNotificationFromProp === "function" ? errorNotificationFromProp(err, values, resource) : errorNotificationFromProp;
+        handleNotification(notificationConfig, {
+          key: `create-${resource}-notification`,
+          description: err.message,
+          message: translate(
+            "notifications.createError",
+            {
+              resource: translate(
+                `${resource}.${resource}`,
+                resourceSingular
+              ),
+              statusCode: err.statusCode
+            },
+            `There was an error creating ${resourceSingular} (status code: ${err.statusCode})`
+          ),
+          type: "error"
+        });
+      }
+    }
+  );
+  return mutation;
+};
+
+// src/hooks/data/useDelete.ts
+import { useQueryClient as useQueryClient3, useMutation as useMutation6 } from "react-query";
+import pluralize4 from "pluralize";
+var useDelete = () => {
+  const { mutate: checkError } = useCheckError();
+  const dataProvider = useDataProvider();
+  const queryClient = useQueryClient3();
+  const {
+    mutationMode: mutationModeContext,
+    undoableTimeout: undoableTimeoutContext
+  } = useMutationMode();
+  const { notificationDispatch } = useCancelNotification();
+  const translate = useTranslate();
+  const publish = usePublish();
+  const { log } = useLog();
+  const handleNotification = useHandleNotification();
+  const invalidateStore = useInvalidate();
+  const mutation = useMutation6(
+    ({
+      id,
+      mutationMode,
+      undoableTimeout,
+      resource,
+      onCancel,
+      metaData,
+      dataProviderName,
+      values
+    }) => {
+      const mutationModePropOrContext = mutationMode != null ? mutationMode : mutationModeContext;
+      const undoableTimeoutPropOrContext = undoableTimeout != null ? undoableTimeout : undoableTimeoutContext;
+      if (!(mutationModePropOrContext === "undoable")) {
+        return dataProvider(dataProviderName).deleteOne({
+          resource,
+          id,
+          metaData,
+          variables: values
+        });
+      }
+      const deletePromise = new Promise(
+        (resolve, reject) => {
+          const doMutation = () => {
+            dataProvider(dataProviderName).deleteOne({
+              resource,
+              id,
+              metaData,
+              variables: values
+            }).then((result) => resolve(result)).catch((err) => reject(err));
+          };
+          const cancelMutation = () => {
+            reject({ message: "mutationCancelled" });
+          };
+          if (onCancel) {
+            onCancel(cancelMutation);
+          }
+          notificationDispatch({
+            type: "ADD" /* ADD */,
+            payload: {
+              id,
+              resource,
+              cancelMutation,
+              doMutation,
+              seconds: undoableTimeoutPropOrContext,
+              isSilent: !!onCancel
+            }
+          });
+        }
+      );
+      return deletePromise;
+    },
+    {
+      onMutate: async ({
+        id,
+        resource,
+        mutationMode,
+        dataProviderName
+      }) => {
+        const queryKey = queryKeys(resource, dataProviderName);
+        const mutationModePropOrContext = mutationMode != null ? mutationMode : mutationModeContext;
+        await queryClient.cancelQueries(
+          queryKey.resourceAll,
+          void 0,
+          {
+            silent: true
+          }
+        );
+        const previousQueries = queryClient.getQueriesData(queryKey.resourceAll);
+        if (!(mutationModePropOrContext === "pessimistic")) {
+          queryClient.setQueriesData(
+            queryKey.list(),
+            (previous) => {
+              if (!previous) {
+                return null;
+              }
+              const data = previous.data.filter(
+                (record) => {
+                  var _a;
+                  return ((_a = record.id) == null ? void 0 : _a.toString()) !== id.toString();
+                }
+              );
+              return {
+                data,
+                total: previous.total - 1
+              };
+            }
+          );
+          queryClient.setQueriesData(
+            queryKey.many(),
+            (previous) => {
+              if (!previous) {
+                return null;
+              }
+              const data = previous.data.filter(
+                (record) => {
+                  var _a;
+                  return ((_a = record.id) == null ? void 0 : _a.toString()) !== (id == null ? void 0 : id.toString());
+                }
+              );
+              return {
+                ...previous,
+                data
+              };
+            }
+          );
+        }
+        return {
+          previousQueries,
+          queryKey
+        };
+      },
+      onSettled: (_data, _error, {
+        id,
+        resource,
+        dataProviderName,
+        invalidates = ["list", "many"]
+      }) => {
+        invalidateStore({
+          resource,
+          dataProviderName,
+          invalidates
+        });
+        notificationDispatch({
+          type: "REMOVE" /* REMOVE */,
+          payload: { id, resource }
+        });
+      },
+      onSuccess: (_data, {
+        id,
+        resource,
+        successNotification,
+        dataProviderName,
+        metaData
+      }, context) => {
+        const resourceSingular = pluralize4.singular(resource != null ? resource : "");
+        queryClient.removeQueries(context == null ? void 0 : context.queryKey.detail(id));
+        const notificationConfig = typeof successNotification === "function" ? successNotification(_data, id, resource) : successNotification;
+        handleNotification(notificationConfig, {
+          key: `${id}-${resource}-notification`,
+          description: translate("notifications.success", "Success"),
+          message: translate(
+            "notifications.deleteSuccess",
+            {
+              resource: translate(
+                `${resource}.${resource}`,
+                resourceSingular
+              )
+            },
+            `Successfully deleted a ${resourceSingular}`
+          ),
+          type: "success"
+        });
+        publish == null ? void 0 : publish({
+          channel: `resources/${resource}`,
+          type: "deleted",
+          payload: {
+            ids: id ? [id] : []
+          },
+          date: new Date()
+        });
+        const { fields, operation, variables, ...rest } = metaData || {};
+        log == null ? void 0 : log.mutate({
+          action: "delete",
+          resource,
+          meta: {
+            id,
+            dataProviderName,
+            ...rest
+          }
+        });
+        queryClient.removeQueries(context == null ? void 0 : context.queryKey.detail(id));
+      },
+      onError: (err, { id, resource, errorNotification }, context) => {
+        if (context) {
+          for (const query of context.previousQueries) {
+            queryClient.setQueryData(query[0], query[1]);
+          }
+        }
+        if (err.message !== "mutationCancelled") {
+          checkError(err);
+          const resourceSingular = pluralize4.singular(resource != null ? resource : "");
+          const notificationConfig = typeof errorNotification === "function" ? errorNotification(err, id, resource) : errorNotification;
+          handleNotification(notificationConfig, {
+            key: `${id}-${resource}-notification`,
+            message: translate(
+              "notifications.deleteError",
+              {
+                resource: resourceSingular,
+                statusCode: err.statusCode
+              },
+              `Error (status code: ${err.statusCode})`
+            ),
+            description: err.message,
+            type: "error"
+          });
+        }
+      }
+    }
+  );
+  return mutation;
+};
+
+// src/hooks/data/useCreateMany.ts
+import { useMutation as useMutation7 } from "react-query";
+import pluralize5 from "pluralize";
+var useCreateMany = () => {
+  const dataProvider = useDataProvider();
+  const translate = useTranslate();
+  const publish = usePublish();
+  const handleNotification = useHandleNotification();
+  const invalidateStore = useInvalidate();
+  const mutation = useMutation7(
+    ({
+      resource,
+      values,
+      metaData,
+      dataProviderName
+    }) => dataProvider(dataProviderName).createMany({
+      resource,
+      variables: values,
+      metaData
+    }),
+    {
+      onSuccess: (response, {
+        resource,
+        successNotification,
+        dataProviderName,
+        invalidates = ["list", "many"],
+        values
+      }) => {
+        const resourcePlural = pluralize5.plural(resource);
+        const notificationConfig = typeof successNotification === "function" ? successNotification(response, values, resource) : successNotification;
+        handleNotification(notificationConfig, {
+          key: `createMany-${resource}-notification`,
+          message: translate(
+            "notifications.createSuccess",
+            {
+              resource: translate(
+                `${resource}.${resource}`,
+                resource
+              )
+            },
+            `Successfully created ${resourcePlural}`
+          ),
+          description: translate("notifications.success", "Success"),
+          type: "success"
+        });
+        invalidateStore({
+          resource,
+          dataProviderName,
+          invalidates
+        });
+        const ids = response == null ? void 0 : response.data.filter((item) => (item == null ? void 0 : item.id) !== void 0).map((item) => item.id);
+        publish == null ? void 0 : publish({
+          channel: `resources/${resource}`,
+          type: "created",
+          payload: {
+            ids
+          },
+          date: new Date()
+        });
+      },
+      onError: (err, { resource, errorNotification, values }) => {
+        const notificationConfig = typeof errorNotification === "function" ? errorNotification(err, values, resource) : errorNotification;
+        handleNotification(notificationConfig, {
+          key: `createMany-${resource}-notification`,
+          description: err.message,
+          message: translate(
+            "notifications.createError",
+            {
+              resource: translate(
+                `${resource}.${resource}`,
+                resource
+              ),
+              statusCode: err.statusCode
+            },
+            `There was an error creating ${resource} (status code: ${err.statusCode}`
+          ),
+          type: "error"
+        });
+      }
+    }
+  );
+  return mutation;
+};
+
+// src/hooks/data/useUpdateMany.ts
+import { useMutation as useMutation8, useQueryClient as useQueryClient4 } from "react-query";
+import pluralize6 from "pluralize";
+var useUpdateMany = () => {
+  const queryClient = useQueryClient4();
+  const dataProvider = useDataProvider();
+  const translate = useTranslate();
+  const {
+    mutationMode: mutationModeContext,
+    undoableTimeout: undoableTimeoutContext
+  } = useMutationMode();
+  const { mutate: checkError } = useCheckError();
+  const { notificationDispatch } = useCancelNotification();
+  const publish = usePublish();
+  const handleNotification = useHandleNotification();
+  const invalidateStore = useInvalidate();
+  const mutation = useMutation8(
+    ({
+      ids,
+      values,
+      resource,
+      onCancel,
+      mutationMode,
+      undoableTimeout,
+      metaData,
+      dataProviderName
+    }) => {
+      const mutationModePropOrContext = mutationMode != null ? mutationMode : mutationModeContext;
+      const undoableTimeoutPropOrContext = undoableTimeout != null ? undoableTimeout : undoableTimeoutContext;
+      if (!(mutationModePropOrContext === "undoable")) {
+        return dataProvider(dataProviderName).updateMany({
+          resource,
+          ids,
+          variables: values,
+          metaData
+        });
+      }
+      const updatePromise = new Promise(
+        (resolve, reject) => {
+          const doMutation = () => {
+            dataProvider(dataProviderName).updateMany({
+              resource,
+              ids,
+              variables: values,
+              metaData
+            }).then((result) => resolve(result)).catch((err) => reject(err));
+          };
+          const cancelMutation = () => {
+            reject({ message: "mutationCancelled" });
+          };
+          if (onCancel) {
+            onCancel(cancelMutation);
+          }
+          notificationDispatch({
+            type: "ADD" /* ADD */,
+            payload: {
+              id: ids,
+              resource,
+              cancelMutation,
+              doMutation,
+              seconds: undoableTimeoutPropOrContext,
+              isSilent: !!onCancel
+            }
+          });
+        }
+      );
+      return updatePromise;
+    },
+    {
+      onMutate: async ({
+        resource,
+        ids,
+        values,
+        mutationMode,
+        dataProviderName,
+        metaData
+      }) => {
+        const queryKey = queryKeys(
+          resource,
+          dataProviderName,
+          metaData
+        );
+        const mutationModePropOrContext = mutationMode != null ? mutationMode : mutationModeContext;
+        await queryClient.cancelQueries(
+          queryKey.resourceAll,
+          void 0,
+          {
+            silent: true
+          }
+        );
+        const previousQueries = queryClient.getQueriesData(queryKey.resourceAll);
+        if (!(mutationModePropOrContext === "pessimistic")) {
+          queryClient.setQueriesData(
+            queryKey.list(),
+            (previous) => {
+              if (!previous) {
+                return null;
+              }
+              const data = previous.data.map((record) => {
+                if (record.id !== void 0 && ids.filter((id) => id !== void 0).map(String).includes(record.id.toString())) {
+                  return {
+                    ...record,
+                    ...values
+                  };
+                }
+                return record;
+              });
+              return {
+                ...previous,
+                data
+              };
+            }
+          );
+          queryClient.setQueriesData(
+            queryKey.many(),
+            (previous) => {
+              if (!previous) {
+                return null;
+              }
+              const data = previous.data.map((record) => {
+                if (record.id !== void 0 && ids.filter((id) => id !== void 0).map(String).includes(record.id.toString())) {
+                  return {
+                    ...record,
+                    ...values
+                  };
+                }
+                return record;
+              });
+              return {
+                ...previous,
+                data
+              };
+            }
+          );
+          for (const id of ids) {
+            queryClient.setQueriesData(
+              queryKey.detail(id),
+              (previous) => {
+                if (!previous) {
+                  return null;
+                }
+                const data = {
+                  ...previous.data,
+                  ...values
+                };
+                return {
+                  ...previous,
+                  data
+                };
+              }
+            );
+          }
+        }
+        return {
+          previousQueries,
+          queryKey
+        };
+      },
+      onSettled: (_data, _error, { ids, resource, dataProviderName }) => {
+        invalidateStore({
+          resource,
+          invalidates: ["list", "many"],
+          dataProviderName
+        });
+        ids.forEach(
+          (id) => invalidateStore({
+            resource,
+            invalidates: ["detail"],
+            dataProviderName,
+            id
+          })
+        );
+        notificationDispatch({
+          type: "REMOVE" /* REMOVE */,
+          payload: { id: ids, resource }
+        });
+      },
+      onSuccess: (data, { ids, resource, successNotification, values }) => {
+        const resourceSingular = pluralize6.singular(resource);
+        const notificationConfig = typeof successNotification === "function" ? successNotification(data, { ids, values }, resource) : successNotification;
+        handleNotification(notificationConfig, {
+          key: `${ids}-${resource}-notification`,
+          description: translate(
+            "notifications.success",
+            "Successful"
+          ),
+          message: translate(
+            "notifications.editSuccess",
+            {
+              resource: translate(
+                `${resource}.${resource}`,
+                resource
+              )
+            },
+            `Successfully updated ${resourceSingular}`
+          ),
+          type: "success"
+        });
+        publish == null ? void 0 : publish({
+          channel: `resources/${resource}`,
+          type: "updated",
+          payload: {
+            ids: ids.map(String)
+          },
+          date: new Date()
+        });
+      },
+      onError: (err, { ids, resource, errorNotification, values }, context) => {
+        if (context) {
+          for (const query of context.previousQueries) {
+            queryClient.setQueryData(query[0], query[1]);
+          }
+        }
+        if (err.message !== "mutationCancelled") {
+          checkError == null ? void 0 : checkError(err);
+          const resourceSingular = pluralize6.singular(resource);
+          const notificationConfig = typeof errorNotification === "function" ? errorNotification(err, { ids, values }, resource) : errorNotification;
+          handleNotification(notificationConfig, {
+            key: `${ids}-${resource}-updateMany-error-notification`,
+            message: translate(
+              "notifications.editError",
+              {
+                resource: resourceSingular,
+                statusCode: err.statusCode
+              },
+              `Error when updating ${resourceSingular} (status code: ${err.statusCode})`
+            ),
+            description: err.message,
+            type: "error"
+          });
+        }
+      }
+    }
+  );
+  return mutation;
+};
+
+// src/hooks/data/useDeleteMany.ts
+import { useQueryClient as useQueryClient5, useMutation as useMutation9 } from "react-query";
+import pluralize7 from "pluralize";
+var useDeleteMany = () => {
+  const { mutate: checkError } = useCheckError();
+  const {
+    mutationMode: mutationModeContext,
+    undoableTimeout: undoableTimeoutContext
+  } = useMutationMode();
+  const dataProvider = useDataProvider();
+  const { notificationDispatch } = useCancelNotification();
+  const translate = useTranslate();
+  const publish = usePublish();
+  const handleNotification = useHandleNotification();
+  const invalidateStore = useInvalidate();
+  const queryClient = useQueryClient5();
+  const mutation = useMutation9(
+    ({
+      resource,
+      ids,
+      mutationMode,
+      undoableTimeout,
+      onCancel,
+      metaData,
+      dataProviderName,
+      values
+    }) => {
+      const mutationModePropOrContext = mutationMode != null ? mutationMode : mutationModeContext;
+      const undoableTimeoutPropOrContext = undoableTimeout != null ? undoableTimeout : undoableTimeoutContext;
+      if (!(mutationModePropOrContext === "undoable")) {
+        return dataProvider(dataProviderName).deleteMany({
+          resource,
+          ids,
+          metaData,
+          variables: values
+        });
+      }
+      const updatePromise = new Promise(
+        (resolve, reject) => {
+          const doMutation = () => {
+            dataProvider(dataProviderName).deleteMany({
+              resource,
+              ids,
+              metaData,
+              variables: values
+            }).then((result) => resolve(result)).catch((err) => reject(err));
+          };
+          const cancelMutation = () => {
+            reject({ message: "mutationCancelled" });
+          };
+          if (onCancel) {
+            onCancel(cancelMutation);
+          }
+          notificationDispatch({
+            type: "ADD" /* ADD */,
+            payload: {
+              id: ids,
+              resource,
+              cancelMutation,
+              doMutation,
+              seconds: undoableTimeoutPropOrContext,
+              isSilent: !!onCancel
+            }
+          });
+        }
+      );
+      return updatePromise;
+    },
+    {
+      onMutate: async ({
+        ids,
+        resource,
+        mutationMode,
+        dataProviderName
+      }) => {
+        const queryKey = queryKeys(resource, dataProviderName);
+        const mutationModePropOrContext = mutationMode != null ? mutationMode : mutationModeContext;
+        await queryClient.cancelQueries(
+          queryKey.resourceAll,
+          void 0,
+          {
+            silent: true
+          }
+        );
+        const previousQueries = queryClient.getQueriesData(queryKey.resourceAll);
+        if (!(mutationModePropOrContext === "pessimistic")) {
+          queryClient.setQueriesData(
+            queryKey.list(),
+            (previous) => {
+              if (!previous) {
+                return null;
+              }
+              const data = previous.data.filter(
+                (item) => item.id && !ids.map(String).includes(item.id.toString())
+              );
+              return {
+                data,
+                total: previous.total - 1
+              };
+            }
+          );
+          queryClient.setQueriesData(
+            queryKey.many(),
+            (previous) => {
+              if (!previous) {
+                return null;
+              }
+              const data = previous.data.filter(
+                (record) => {
+                  if (record.id) {
+                    return !ids.map(String).includes(record.id.toString());
+                  }
+                  return false;
+                }
+              );
+              return {
+                ...previous,
+                data
+              };
+            }
+          );
+          for (const id of ids) {
+            queryClient.setQueriesData(
+              queryKey.detail(id),
+              (previous) => {
+                if (!previous || previous.data.id == id) {
+                  return null;
+                }
+                return {
+                  ...previous
+                };
+              }
+            );
+          }
+        }
+        return {
+          previousQueries,
+          queryKey
+        };
+      },
+      onSettled: (_data, _error, {
+        resource,
+        ids,
+        dataProviderName,
+        invalidates = ["list", "many"]
+      }) => {
+        invalidateStore({
+          resource,
+          dataProviderName,
+          invalidates
+        });
+        notificationDispatch({
+          type: "REMOVE" /* REMOVE */,
+          payload: { id: ids, resource }
+        });
+      },
+      onSuccess: (_data, { ids, resource, successNotification }, context) => {
+        ids.forEach(
+          (id) => queryClient.removeQueries(context == null ? void 0 : context.queryKey.detail(id))
+        );
+        const notificationConfig = typeof successNotification === "function" ? successNotification(_data, ids, resource) : successNotification;
+        handleNotification(notificationConfig, {
+          key: `${ids}-${resource}-notification`,
+          description: translate("notifications.success", "Success"),
+          message: translate(
+            "notifications.deleteSuccess",
+            {
+              resource: translate(
+                `${resource}.${resource}`,
+                resource
+              )
+            },
+            `Successfully deleted ${resource}`
+          ),
+          type: "success"
+        });
+        publish == null ? void 0 : publish({
+          channel: `resources/${resource}`,
+          type: "deleted",
+          payload: { ids },
+          date: new Date()
+        });
+        ids.forEach(
+          (id) => queryClient.removeQueries(context == null ? void 0 : context.queryKey.detail(id))
+        );
+      },
+      onError: (err, { ids, resource, errorNotification }, context) => {
+        if (context) {
+          for (const query of context.previousQueries) {
+            queryClient.setQueryData(query[0], query[1]);
+          }
+        }
+        if (err.message !== "mutationCancelled") {
+          checkError(err);
+          const resourceSingular = pluralize7.singular(resource);
+          const notificationConfig = typeof errorNotification === "function" ? errorNotification(err, ids, resource) : errorNotification;
+          handleNotification(notificationConfig, {
+            key: `${ids}-${resource}-notification`,
+            message: translate(
+              "notifications.deleteError",
+              {
+                resource: resourceSingular,
+                statusCode: err.statusCode
+              },
+              `Error (status code: ${err.statusCode})`
+            ),
+            description: err.message,
+            type: "error"
+          });
+        }
+      }
+    }
+  );
+  return mutation;
+};
+
+// src/hooks/data/useApiUrl.ts
+var useApiUrl = (dataProviderName) => {
+  const dataProvider = useDataProvider();
+  const { getApiUrl } = dataProvider(dataProviderName);
+  return getApiUrl();
+};
+
+// src/hooks/data/useCustom.ts
+import { useQuery as useQuery7 } from "react-query";
+var useCustom = ({
+  url,
+  method,
+  config,
+  queryOptions,
+  successNotification,
+  errorNotification,
+  metaData,
+  dataProviderName
+}) => {
+  const dataProvider = useDataProvider();
+  const { custom } = dataProvider(dataProviderName);
+  const { mutate: checkError } = useCheckError();
+  const translate = useTranslate();
+  const handleNotification = useHandleNotification();
+  if (custom) {
+    const queryResponse = useQuery7(
+      [
+        dataProviderName,
+        "custom",
+        method,
+        url,
+        { ...config, ...metaData }
+      ],
+      () => custom({ url, method, ...config, metaData }),
+      {
+        ...queryOptions,
+        onSuccess: (data) => {
+          var _a;
+          (_a = queryOptions == null ? void 0 : queryOptions.onSuccess) == null ? void 0 : _a.call(queryOptions, data);
+          const notificationConfig = typeof successNotification === "function" ? successNotification(data, {
+            ...config,
+            ...metaData
+          }) : successNotification;
+          handleNotification(notificationConfig);
+        },
+        onError: (err) => {
+          var _a;
+          checkError(err);
+          (_a = queryOptions == null ? void 0 : queryOptions.onError) == null ? void 0 : _a.call(queryOptions, err);
+          const notificationConfig = typeof errorNotification === "function" ? errorNotification(err, { ...config, ...metaData }) : errorNotification;
+          handleNotification(notificationConfig, {
+            key: `${method}-notification`,
+            message: translate(
+              "common:notifications.error",
+              { statusCode: err.statusCode },
+              `Error (status code: ${err.statusCode})`
+            ),
+            description: err.message,
+            type: "error"
+          });
+        }
+      }
+    );
+    return queryResponse;
+  } else {
+    throw Error("Not implemented custom on data provider.");
+  }
+};
+
+// src/hooks/data/useCustomMutation.ts
+import { useMutation as useMutation10 } from "react-query";
+var useCustomMutation = () => {
+  const handleNotification = useHandleNotification();
+  const dataProvider = useDataProvider();
+  const translate = useTranslate();
+  const mutation = useMutation10(
+    ({
+      url,
+      method,
+      values,
+      metaData,
+      dataProviderName,
+      config
+    }) => {
+      const { custom } = dataProvider(dataProviderName);
+      if (custom) {
+        return custom({
+          url,
+          method,
+          payload: values,
+          metaData,
+          headers: { ...config == null ? void 0 : config.headers }
+        });
+      }
+      throw Error("Not implemented custom on data provider.");
+    },
+    {
+      onSuccess: (data, {
+        successNotification: successNotificationFromProp,
+        config,
+        metaData
+      }) => {
+        const notificationConfig = typeof successNotificationFromProp === "function" ? successNotificationFromProp(data, {
+          ...config,
+          ...metaData
+        }) : successNotificationFromProp;
+        handleNotification(notificationConfig);
+      },
+      onError: (err, {
+        errorNotification: errorNotificationFromProp,
+        method,
+        config,
+        metaData
+      }) => {
+        const notificationConfig = typeof errorNotificationFromProp === "function" ? errorNotificationFromProp(err, {
+          ...config,
+          ...metaData
+        }) : errorNotificationFromProp;
+        handleNotification(notificationConfig, {
+          key: `${method}-notification`,
+          message: translate(
+            "common:notifications.error",
+            { statusCode: err.statusCode },
+            `Error (status code: ${err.statusCode})`
+          ),
+          description: err.message,
+          type: "error"
+        });
+      }
+    }
+  );
+  return mutation;
+};
+
+// src/hooks/data/useDataProvider.tsx
+import { useCallback, useContext as useContext4 } from "react";
+
+// src/contexts/data/index.tsx
+import React7 from "react";
+var defaultDataProvider = () => {
+  return {
+    default: {
+      create: () => Promise.resolve({ data: { id: 1 } }),
+      createMany: () => Promise.resolve({ data: [] }),
+      deleteOne: () => Promise.resolve({ data: { id: 1 } }),
+      deleteMany: () => Promise.resolve({ data: [] }),
+      getList: () => Promise.resolve({ data: [], total: 0 }),
+      getMany: () => Promise.resolve({ data: [] }),
+      getOne: () => Promise.resolve({ data: { id: 1 } }),
+      update: () => Promise.resolve({ data: { id: 1 } }),
+      updateMany: () => Promise.resolve({ data: [] }),
+      custom: () => Promise.resolve({ data: {} }),
+      getApiUrl: () => ""
+    }
+  };
+};
+var DataContext = React7.createContext(
+  defaultDataProvider()
+);
+var DataContextProvider = ({ children, ...rest }) => {
+  let dataProviders;
+  if (!rest.hasOwnProperty("updateMany") || !rest.hasOwnProperty("createMany")) {
+    dataProviders = rest;
+  } else {
+    dataProviders = {
+      default: rest
+    };
+  }
+  return /* @__PURE__ */ React7.createElement(DataContext.Provider, {
+    value: dataProviders
+  }, children);
+};
+
+// src/hooks/data/useDataProvider.tsx
+var useDataProvider = () => {
+  const context = useContext4(DataContext);
+  const handleDataProvider = useCallback(
+    (dataProviderName) => {
+      if (dataProviderName) {
+        const dataProvider = context[dataProviderName];
+        if (!dataProvider) {
+          throw new Error(
+            `"${dataProviderName}" Data provider not found`
+          );
+        }
+        return context[dataProviderName];
+      }
+      if (context.default) {
+        return context.default;
+      } else
+        throw new Error(
+          `There is no "default" data provider. Please pass dataProviderName.`
+        );
+    },
+    [context]
+  );
+  return handleDataProvider;
+};
+
+// src/hooks/live/useResourceSubscription/index.ts
+import { useContext as useContext5, useEffect as useEffect2 } from "react";
+import { useQueryClient as useQueryClient6 } from "react-query";
+
+// src/contexts/live/index.tsx
+import React8 from "react";
+var LiveContext = React8.createContext(void 0);
+var LiveContextProvider = ({
+  liveProvider,
+  children
+}) => {
+  return /* @__PURE__ */ React8.createElement(LiveContext.Provider, {
+    value: liveProvider
+  }, children);
+};
+
+// src/contexts/refine/index.tsx
+import React10 from "react";
+
+// src/components/layoutWrapper/defaultLayout/index.tsx
+import React9 from "react";
+var DefaultLayout = ({ children }) => {
+  return /* @__PURE__ */ React9.createElement("div", null, children);
+};
+
+// src/contexts/refine/index.tsx
+var RefineContext = React10.createContext({
+  hasDashboard: false,
+  mutationMode: "pessimistic",
+  warnWhenUnsavedChanges: false,
+  syncWithLocation: false,
+  undoableTimeout: 5e3,
+  Title: void 0,
+  Sider: void 0,
+  Header: void 0,
+  Footer: void 0,
+  Layout: DefaultLayout,
+  OffLayoutArea: void 0,
+  liveMode: "off",
+  onLiveEvent: void 0
+});
+var RefineContextProvider = ({
+  hasDashboard,
+  mutationMode,
+  warnWhenUnsavedChanges,
+  syncWithLocation,
+  undoableTimeout,
+  children,
+  DashboardPage,
+  Title,
+  Layout = DefaultLayout,
+  Header,
+  Sider,
+  Footer,
+  OffLayoutArea,
+  LoginPage: LoginPage2 = LoginPage,
+  catchAll,
+  liveMode = "off",
+  onLiveEvent
+}) => {
+  return /* @__PURE__ */ React10.createElement(RefineContext.Provider, {
+    value: {
+      hasDashboard,
+      mutationMode,
+      warnWhenUnsavedChanges,
+      syncWithLocation,
+      Title,
+      undoableTimeout,
+      Layout,
+      Header,
+      Sider,
+      Footer,
+      OffLayoutArea,
+      DashboardPage,
+      LoginPage: LoginPage2,
+      catchAll,
+      liveMode,
+      onLiveEvent
+    }
+  }, children);
+};
+
+// src/hooks/live/useResourceSubscription/index.ts
+var useResourceSubscription = ({
+  resource,
+  params,
+  channel,
+  types,
+  enabled = true,
+  liveMode: liveModeFromProp,
+  onLiveEvent
+}) => {
+  const queryClient = useQueryClient6();
+  const queryKey = queryKeys(resource);
+  const liveDataContext = useContext5(LiveContext);
+  const {
+    liveMode: liveModeFromContext,
+    onLiveEvent: onLiveEventContextCallback
+  } = useContext5(RefineContext);
+  const liveMode = liveModeFromProp != null ? liveModeFromProp : liveModeFromContext;
+  useEffect2(() => {
+    let subscription;
+    if (liveMode && liveMode !== "off" && enabled) {
+      subscription = liveDataContext == null ? void 0 : liveDataContext.subscribe({
+        channel,
+        params: {
+          resource,
+          ...params
+        },
+        types,
+        callback: (event) => {
+          if (liveMode === "auto") {
+            queryClient.invalidateQueries(queryKey.resourceAll);
+          }
+          onLiveEvent == null ? void 0 : onLiveEvent(event);
+          onLiveEventContextCallback == null ? void 0 : onLiveEventContextCallback(event);
+        }
+      });
+    }
+    return () => {
+      if (subscription) {
+        liveDataContext == null ? void 0 : liveDataContext.unsubscribe(subscription);
+      }
+    };
+  }, [enabled]);
+};
+
+// src/hooks/live/useLiveMode/index.ts
+import { useContext as useContext6 } from "react";
+var useLiveMode = (liveMode) => {
+  const { liveMode: liveModeFromContext } = useContext6(RefineContext);
+  return liveMode != null ? liveMode : liveModeFromContext;
+};
+
+// src/hooks/live/useSubscription/index.ts
+import { useContext as useContext7, useEffect as useEffect3 } from "react";
+var useSubscription = ({
+  params,
+  channel,
+  types = ["*"],
+  enabled = true,
+  onLiveEvent
+}) => {
+  const liveDataContext = useContext7(LiveContext);
+  useEffect3(() => {
+    let subscription;
+    if (enabled) {
+      subscription = liveDataContext == null ? void 0 : liveDataContext.subscribe({
+        channel,
+        params,
+        types,
+        callback: onLiveEvent
+      });
+    }
+    return () => {
+      if (subscription) {
+        liveDataContext == null ? void 0 : liveDataContext.unsubscribe(subscription);
+      }
+    };
+  }, [enabled]);
+};
+
+// src/hooks/live/usePublish/index.ts
+import { useContext as useContext8 } from "react";
+var usePublish = () => {
+  const liveContext = useContext8(LiveContext);
+  return liveContext == null ? void 0 : liveContext.publish;
+};
+
+// src/hooks/resource/useResource/index.ts
+import { useContext as useContext9 } from "react";
+
+// src/contexts/resource/index.tsx
+import React11 from "react";
+var ResourceContext = React11.createContext({
+  resources: []
+});
+var ResourceContextProvider = ({ resources, children }) => {
+  return /* @__PURE__ */ React11.createElement(ResourceContext.Provider, {
+    value: { resources }
+  }, children);
+};
+
+// src/hooks/resource/useResource/index.ts
+var useResource = ({
+  resourceName: propResourceName,
+  resourceNameOrRouteName,
+  recordItemId
+} = {}) => {
+  const { resources } = useContext9(ResourceContext);
+  const resourceWithRoute = useResourceWithRoute();
+  const { useParams } = useRouterContext();
+  const params = useParams();
+  const resource = resourceWithRoute(
+    resourceNameOrRouteName != null ? resourceNameOrRouteName : params.resource
+  );
+  const resourceName = propResourceName != null ? propResourceName : resource.name;
+  const id = recordItemId != null ? recordItemId : params.id;
+  return { resources, resource, resourceName, id };
+};
+
+// src/hooks/resource/useResourceWithRoute/index.ts
+import { useContext as useContext10, useCallback as useCallback2 } from "react";
+var useResourceWithRoute = () => {
+  const { resources } = useContext10(ResourceContext);
+  const resourceWithRoute = useCallback2(
+    (route) => {
+      const resource = resources.find((p) => p.route === route);
+      if (!resource) {
+        const resourceWithName = resources.find(
+          (p) => p.name === route
+        );
+        return resourceWithName != null ? resourceWithName : { name: route, route };
+      }
+      return resource;
+    },
+    [resources]
+  );
+  return resourceWithRoute;
+};
+
+// src/hooks/notification/useCancelNotification/index.tsx
+import { useContext as useContext11 } from "react";
+var useCancelNotification = () => {
+  const { notifications, notificationDispatch } = useContext11(UndoableQueueContext);
+  return { notifications, notificationDispatch };
+};
+
+// src/hooks/notification/useNotification/index.ts
+import { useContext as useContext12 } from "react";
+
+// src/contexts/notification/index.tsx
+import React12, { createContext } from "react";
+var NotificationContext = createContext({});
+var NotificationContextProvider = ({ open, close, children }) => {
+  return /* @__PURE__ */ React12.createElement(NotificationContext.Provider, {
+    value: { open, close }
+  }, children);
+};
+
+// src/hooks/notification/useNotification/index.ts
+var useNotification = () => {
+  const { open, close } = useContext12(NotificationContext);
+  return { open, close };
+};
+
+// src/hooks/notification/useHandleNotification/index.ts
+import { useCallback as useCallback3 } from "react";
+var useHandleNotification = () => {
+  const { open } = useNotification();
+  const handleNotification = useCallback3(
+    (notification, fallbackNotification) => {
+      if (notification !== false) {
+        if (notification) {
+          open == null ? void 0 : open(notification);
+        } else if (fallbackNotification) {
+          open == null ? void 0 : open(fallbackNotification);
+        }
+      }
+    },
+    []
+  );
+  return handleNotification;
+};
+
+// src/hooks/translate/useSetLocale.ts
+import { useCallback as useCallback4, useContext as useContext13 } from "react";
+
+// src/contexts/translation/index.tsx
+import React13 from "react";
+var TranslationContext = React13.createContext({});
+var TranslationContextProvider = ({ children, i18nProvider }) => {
+  return /* @__PURE__ */ React13.createElement(TranslationContext.Provider, {
+    value: {
+      i18nProvider
+    }
+  }, children);
+};
+
+// src/hooks/translate/useSetLocale.ts
+var useSetLocale = () => {
+  const { i18nProvider } = useContext13(TranslationContext);
+  return useCallback4((lang) => i18nProvider == null ? void 0 : i18nProvider.changeLocale(lang), []);
+};
+
+// src/hooks/translate/useTranslate.ts
+import { useContext as useContext14, useMemo } from "react";
+var useTranslate = () => {
+  const { i18nProvider } = useContext14(TranslationContext);
+  const fn = useMemo(() => {
+    function translate(key, options, defaultMessage) {
+      var _a, _b;
+      return (_b = (_a = i18nProvider == null ? void 0 : i18nProvider.translate(key, options, defaultMessage)) != null ? _a : defaultMessage) != null ? _b : typeof options === "string" && typeof defaultMessage === "undefined" ? options : key;
+    }
+    return translate;
+  }, [i18nProvider]);
+  return fn;
+};
+
+// src/hooks/translate/useGetLocale.ts
+import { useContext as useContext15, useCallback as useCallback5 } from "react";
+var useGetLocale = () => {
+  const { i18nProvider } = useContext15(TranslationContext);
+  return useCallback5(() => i18nProvider == null ? void 0 : i18nProvider.getLocale(), []);
+};
+
+// src/hooks/refine/useMutationMode.ts
+import { useContext as useContext16 } from "react";
+var useMutationMode = () => {
+  const { mutationMode, undoableTimeout } = useContext16(RefineContext);
+  return { mutationMode, undoableTimeout };
+};
+
+// src/hooks/refine/useWarnAboutChange/index.ts
+import { useContext as useContext17 } from "react";
+
+// src/contexts/unsavedWarn/index.tsx
+import React14, { useState as useState2 } from "react";
+var UnsavedWarnContext = React14.createContext({});
+var UnsavedWarnContextProvider = ({
+  children
+}) => {
+  const [warnWhen, setWarnWhen] = useState2(false);
+  return /* @__PURE__ */ React14.createElement(UnsavedWarnContext.Provider, {
+    value: { warnWhen, setWarnWhen }
+  }, children);
+};
+
+// src/hooks/refine/useWarnAboutChange/index.ts
+var useWarnAboutChange = () => {
+  const { warnWhenUnsavedChanges } = useContext17(RefineContext);
+  const { warnWhen, setWarnWhen } = useContext17(UnsavedWarnContext);
+  return {
+    warnWhenUnsavedChanges,
+    warnWhen: Boolean(warnWhen),
+    setWarnWhen: setWarnWhen != null ? setWarnWhen : () => void 0
+  };
+};
+
+// src/hooks/refine/useSyncWithLocation.ts
+import { useContext as useContext18 } from "react";
+var useSyncWithLocation = () => {
+  const { syncWithLocation } = useContext18(RefineContext);
+  return { syncWithLocation };
+};
+
+// src/hooks/refine/useTitle.tsx
+import { useContext as useContext19 } from "react";
+var useTitle = () => {
+  const { Title } = useContext19(RefineContext);
+  return Title;
+};
+
+// src/hooks/refine/useRefineContex.ts
+import { useContext as useContext20 } from "react";
+var useRefineContext = () => {
+  const {
+    Footer,
+    Header,
+    Layout,
+    OffLayoutArea,
+    Sider,
+    Title,
+    hasDashboard,
+    mutationMode,
+    syncWithLocation,
+    undoableTimeout,
+    warnWhenUnsavedChanges,
+    DashboardPage,
+    LoginPage: LoginPage2,
+    catchAll
+  } = useContext20(RefineContext);
+  return {
+    Footer,
+    Header,
+    Layout,
+    OffLayoutArea,
+    Sider,
+    Title,
+    hasDashboard,
+    mutationMode,
+    syncWithLocation,
+    undoableTimeout,
+    warnWhenUnsavedChanges,
+    DashboardPage,
+    LoginPage: LoginPage2,
+    catchAll
+  };
+};
+
+// src/hooks/export/index.ts
+import { useState as useState3 } from "react";
+import { ExportToCsv } from "export-to-csv-fix-source-map";
+var useExport = ({
+  resourceName,
+  sorter,
+  filters,
+  maxItemCount,
+  pageSize = 20,
+  mapData = (item) => item,
+  exportOptions,
+  metaData,
+  dataProviderName,
+  onError
+} = {}) => {
+  const [isLoading, setIsLoading] = useState3(false);
+  const resourceWithRoute = useResourceWithRoute();
+  const dataProvider = useDataProvider();
+  const { useParams } = useRouterContext();
+  const { resource: routeResourceName } = useParams();
+  let { name: resource } = resourceWithRoute(routeResourceName);
+  if (resourceName) {
+    resource = resourceName;
+  }
+  const filename = `${userFriendlyResourceName(
+    resource,
+    "plural"
+  )}-${new Date().toLocaleString()}`;
+  const { getList } = dataProvider(dataProviderName);
+  const triggerExport = async () => {
+    setIsLoading(true);
+    let rawData = [];
+    let current = 1;
+    let preparingData = true;
+    while (preparingData) {
+      try {
+        const { data, total } = await getList({
+          resource,
+          filters,
+          sort: sorter,
+          pagination: {
+            current,
+            pageSize
+          },
+          metaData
+        });
+        current++;
+        rawData.push(...data);
+        if (maxItemCount && rawData.length >= maxItemCount) {
+          rawData = rawData.slice(0, maxItemCount);
+          preparingData = false;
+        }
+        if (total === rawData.length) {
+          preparingData = false;
+        }
+      } catch (error) {
+        setIsLoading(false);
+        preparingData = false;
+        onError == null ? void 0 : onError(error);
+        return;
+      }
+    }
+    const csvExporter = new ExportToCsv({
+      filename,
+      useKeysAsHeaders: true,
+      ...exportOptions
+    });
+    csvExporter.generateCsv(rawData.map(mapData));
+    setIsLoading(false);
+  };
+  return {
+    isLoading,
+    triggerExport
+  };
+};
+
+// src/hooks/form/useForm.ts
+import React15 from "react";
+var useForm = ({
+  action: actionFromProps,
+  resource: resourceFromProps,
+  id: idFromProps,
+  onMutationSuccess,
+  onMutationError,
+  redirect: redirectFromProps,
+  successNotification,
+  errorNotification,
+  metaData,
+  mutationMode: mutationModeProp,
+  liveMode,
+  onLiveEvent,
+  liveParams,
+  undoableTimeout,
+  dataProviderName,
+  invalidates,
+  queryOptions
+} = {}) => {
+  var _a;
+  const { useParams } = useRouterContext();
+  const {
+    resource: resourceFromRoute,
+    action: actionFromRoute,
+    id: idFromParams
+  } = useParams();
+  const defaultId = !resourceFromProps || resourceFromProps === resourceFromRoute ? idFromProps != null ? idFromProps : idFromParams : idFromProps;
+  const [id, setId] = React15.useState(defaultId);
+  const resourceName = resourceFromProps != null ? resourceFromProps : resourceFromRoute;
+  const action = (_a = actionFromProps != null ? actionFromProps : actionFromRoute) != null ? _a : "create";
+  const resourceWithRoute = useResourceWithRoute();
+  const resource = resourceWithRoute(resourceName);
+  const { mutationMode: mutationModeContext } = useMutationMode();
+  const mutationMode = mutationModeProp != null ? mutationModeProp : mutationModeContext;
+  const isCreate = action === "create";
+  const isEdit = action === "edit";
+  const isClone = action === "clone";
+  const redirect = redirectFromProps != null ? redirectFromProps : "list";
+  const enableQuery = id !== void 0 && (isEdit || isClone);
+  const queryResult = useOne({
+    resource: resource.name,
+    id: id != null ? id : "",
+    queryOptions: {
+      enabled: enableQuery,
+      ...queryOptions
+    },
+    liveMode,
+    onLiveEvent,
+    liveParams,
+    metaData,
+    dataProviderName
+  });
+  const { isFetching: isFetchingQuery } = queryResult;
+  const mutationResultCreate = useCreate();
+  const { mutate: mutateCreate, isLoading: isLoadingCreate } = mutationResultCreate;
+  const mutationResultUpdate = useUpdate();
+  const { mutate: mutateUpdate, isLoading: isLoadingUpdate } = mutationResultUpdate;
+  const { setWarnWhen } = useWarnAboutChange();
+  const handleSubmitWithRedirect = useRedirectionAfterSubmission();
+  const onFinishCreate = async (values) => {
+    setWarnWhen(false);
+    const onSuccess = (id2) => {
+      handleSubmitWithRedirect({
+        redirect,
+        resource,
+        id: id2
+      });
+    };
+    if (mutationMode !== "pessimistic") {
+      setTimeout(() => {
+        onSuccess();
+      });
+    }
+    return new Promise((resolve, reject) => {
+      if (mutationMode !== "pessimistic") {
+        resolve();
+      }
+      return mutateCreate(
+        {
+          values,
+          resource: resource.name,
+          successNotification,
+          errorNotification,
+          metaData,
+          dataProviderName,
+          invalidates
+        },
+        {
+          onSuccess: (data, _, context) => {
+            var _a2;
+            if (onMutationSuccess) {
+              onMutationSuccess(data, values, context);
+            }
+            const responseId = (_a2 = data == null ? void 0 : data.data) == null ? void 0 : _a2.id;
+            onSuccess(responseId);
+            resolve(data);
+          },
+          onError: (error, _, context) => {
+            if (onMutationError) {
+              return onMutationError(error, values, context);
+            }
+            reject();
+          }
+        }
+      );
+    });
+  };
+  const onFinishUpdate = async (values) => {
+    setWarnWhen(false);
+    const variables = {
+      id: id != null ? id : "",
+      values,
+      resource: resource.name,
+      mutationMode,
+      undoableTimeout,
+      successNotification,
+      errorNotification,
+      metaData,
+      dataProviderName,
+      invalidates
+    };
+    const onSuccess = () => {
+      setId(defaultId);
+      handleSubmitWithRedirect({
+        redirect,
+        resource,
+        id
+      });
+    };
+    if (mutationMode !== "pessimistic") {
+      setTimeout(() => {
+        onSuccess();
+      });
+    }
+    return new Promise((resolve, reject) => {
+      if (mutationMode !== "pessimistic") {
+        resolve();
+      }
+      return setTimeout(() => {
+        mutateUpdate(variables, {
+          onSuccess: (data, _, context) => {
+            if (onMutationSuccess) {
+              onMutationSuccess(data, values, context);
+            }
+            if (mutationMode === "pessimistic") {
+              onSuccess();
+            }
+            resolve(data);
+          },
+          onError: (error, _, context) => {
+            if (onMutationError) {
+              return onMutationError(error, values, context);
+            }
+            reject();
+          }
+        });
+      });
+    });
+  };
+  const createResult = {
+    formLoading: isFetchingQuery || isLoadingCreate,
+    mutationResult: mutationResultCreate,
+    onFinish: onFinishCreate
+  };
+  const editResult = {
+    formLoading: isFetchingQuery || isLoadingUpdate,
+    mutationResult: mutationResultUpdate,
+    onFinish: onFinishUpdate
+  };
+  const result = isCreate || isClone ? createResult : editResult;
+  return {
+    ...result,
+    queryResult,
+    id,
+    setId,
+    redirect: (redirect2, idFromFunction) => {
+      handleSubmitWithRedirect({
+        redirect: redirect2 !== void 0 ? redirect2 : isEdit ? "list" : "edit",
+        resource,
+        id: idFromFunction != null ? idFromFunction : id
+      });
+    }
+  };
+};
+
+// src/hooks/redirection/index.ts
+import { useCallback as useCallback6 } from "react";
+var useRedirectionAfterSubmission = () => {
+  const { show, edit, list, create } = useNavigation();
+  const handleSubmitWithRedirect = useCallback6(
+    ({
+      redirect,
+      resource,
+      id
+    }) => {
+      if (redirect && resource.route) {
+        if (resource.canShow && redirect === "show" && id) {
+          return show(resource.route, id);
+        }
+        if (resource.canEdit && redirect === "edit" && id) {
+          return edit(resource.route, id);
+        }
+        if (resource.canCreate && redirect === "create") {
+          return create(resource.route);
+        }
+        return list(resource.route, "push");
+      } else {
+        return;
+      }
+    },
+    []
+  );
+  return handleSubmitWithRedirect;
+};
+
+// src/hooks/navigation/index.ts
+var useNavigation = () => {
+  const { useHistory } = useRouterContext();
+  const history = useHistory();
+  const resourceWithRoute = useResourceWithRoute();
+  const handleUrl = (url, type = "push") => {
+    type === "push" ? history.push(url) : history.replace(url);
+  };
+  const createUrl = (resource) => {
+    const resourceName = resourceWithRoute(resource);
+    return `/${resourceName.route}/create`;
+  };
+  const editUrl = (resource, id) => {
+    const resourceName = resourceWithRoute(resource);
+    const encodedId = encodeURIComponent(id);
+    return `/${resourceName.route}/edit/${encodedId}`;
+  };
+  const cloneUrl = (resource, id) => {
+    const resourceName = resourceWithRoute(resource);
+    const encodedId = encodeURIComponent(id);
+    return `/${resourceName.route}/clone/${encodedId}`;
+  };
+  const showUrl = (resource, id) => {
+    const resourceName = resourceWithRoute(resource);
+    const encodedId = encodeURIComponent(id);
+    return `/${resourceName.route}/show/${encodedId}`;
+  };
+  const listUrl = (resource) => {
+    const resourceName = resourceWithRoute(resource);
+    return `/${resourceName.route}`;
+  };
+  const create = (resource, type = "push") => {
+    handleUrl(createUrl(resource), type);
+  };
+  const edit = (resource, id, type = "push") => {
+    handleUrl(editUrl(resource, id), type);
+  };
+  const clone = (resource, id, type = "push") => {
+    handleUrl(cloneUrl(resource, id), type);
+  };
+  const show = (resource, id, type = "push") => {
+    handleUrl(showUrl(resource, id), type);
+  };
+  const list = (resource, type = "push") => {
+    handleUrl(listUrl(resource), type);
+  };
+  const push = (path, state) => {
+    history.push(path, state);
+  };
+  const replace = (path, state) => {
+    history.replace(path, state);
+  };
+  const goBack = () => {
+    history.goBack();
+  };
+  return {
+    create,
+    createUrl,
+    edit,
+    editUrl,
+    clone,
+    cloneUrl,
+    show,
+    showUrl,
+    list,
+    listUrl,
+    push,
+    replace,
+    goBack
+  };
+};
+
+// src/hooks/show/useShow.ts
+import { useState as useState4 } from "react";
+var useShow = ({
+  resource: resourceFromProp,
+  id,
+  successNotification,
+  errorNotification,
+  metaData,
+  liveMode,
+  onLiveEvent,
+  dataProviderName
+} = {}) => {
+  const { useParams } = useRouterContext();
+  const { resource: routeResourceName, id: idFromRoute } = useParams();
+  const defaultId = !resourceFromProp || resourceFromProp === routeResourceName ? id != null ? id : idFromRoute : id;
+  const [showId, setShowId] = useState4(defaultId);
+  const resourceWithRoute = useResourceWithRoute();
+  const resource = resourceWithRoute(resourceFromProp != null ? resourceFromProp : routeResourceName);
+  const queryResult = useOne({
+    resource: resource.name,
+    id: showId != null ? showId : "",
+    queryOptions: {
+      enabled: showId !== void 0
+    },
+    successNotification,
+    errorNotification,
+    metaData,
+    liveMode,
+    onLiveEvent,
+    dataProviderName
+  });
+  return {
+    queryResult,
+    showId,
+    setShowId
+  };
+};
+
+// src/hooks/import/index.tsx
+import { useEffect as useEffect4, useState as useState5 } from "react";
+import { parse } from "papaparse";
+import chunk from "lodash/chunk";
+var useImport = ({
+  resourceName,
+  mapData = (item) => item,
+  paparseOptions,
+  batchSize = Number.MAX_SAFE_INTEGER,
+  onFinish,
+  metaData,
+  onProgress
+} = {}) => {
+  const [processedAmount, setProcessedAmount] = useState5(0);
+  const [totalAmount, setTotalAmount] = useState5(0);
+  const [isLoading, setIsLoading] = useState5(false);
+  const resourceWithRoute = useResourceWithRoute();
+  const { useParams } = useRouterContext();
+  const { resource: routeResourceName } = useParams();
+  const { name: resource } = resourceWithRoute(
+    resourceName != null ? resourceName : routeResourceName
+  );
+  const createMany = useCreateMany();
+  const create = useCreate();
+  let mutationResult;
+  if (batchSize === 1) {
+    mutationResult = create;
+  } else {
+    mutationResult = createMany;
+  }
+  const handleCleanup = () => {
+    setTotalAmount(0);
+    setProcessedAmount(0);
+    setIsLoading(false);
+  };
+  const handleFinish = (createdValues) => {
+    const result = {
+      succeeded: createdValues.filter(
+        (item) => item.type === "success"
+      ),
+      errored: createdValues.filter(
+        (item) => item.type === "error"
+      )
+    };
+    onFinish == null ? void 0 : onFinish(result);
+    setIsLoading(false);
+  };
+  useEffect4(() => {
+    onProgress == null ? void 0 : onProgress({ totalAmount, processedAmount });
+  }, [totalAmount, processedAmount]);
+  const handleChange = ({ file }) => {
+    handleCleanup();
+    return new Promise(
+      (resolve) => {
+        setIsLoading(true);
+        parse(file, {
+          complete: async ({ data }) => {
+            const values = importCSVMapper(data, mapData);
+            setTotalAmount(values.length);
+            if (batchSize === 1) {
+              const createdValues = await Promise.all(
+                values.map((value) => {
+                  const response = create.mutateAsync({
+                    resource,
+                    values: value,
+                    successNotification: false,
+                    errorNotification: false,
+                    metaData
+                  });
+                  return { response, value };
+                }).map(
+                  ({ response, value }) => response.then(({ data: data2 }) => {
+                    setProcessedAmount(
+                      (currentAmount) => {
+                        return currentAmount + 1;
+                      }
+                    );
+                    return {
+                      response: [data2],
+                      type: "success",
+                      request: [value]
+                    };
+                  }).catch(
+                    (error) => ({
+                      response: [error],
+                      type: "error",
+                      request: [value]
+                    })
+                  )
+                )
+              );
+              resolve(createdValues);
+            } else {
+              const createdValues = await Promise.all(
+                chunk(values, batchSize).map((batch) => {
+                  return {
+                    response: createMany.mutateAsync({
+                      resource,
+                      values: batch,
+                      successNotification: false,
+                      errorNotification: false,
+                      metaData
+                    }),
+                    currentBatchLength: batch.length,
+                    value: batch
+                  };
+                }).map(
+                  ({
+                    response,
+                    value,
+                    currentBatchLength
+                  }) => response.then((response2) => {
+                    setProcessedAmount(
+                      (currentAmount) => {
+                        return currentAmount + currentBatchLength;
+                      }
+                    );
+                    return {
+                      response: response2.data,
+                      type: "success",
+                      request: value
+                    };
+                  }).catch(
+                    (error) => ({
+                      response: [error],
+                      type: "error",
+                      request: value
+                    })
+                  )
+                )
+              );
+              resolve(createdValues);
+            }
+          },
+          ...paparseOptions
+        });
+      }
+    ).then((createdValues) => {
+      handleFinish(createdValues);
+      return createdValues;
+    });
+  };
+  return {
+    inputProps: {
+      type: "file",
+      accept: ".csv",
+      onChange: (event) => {
+        if (event.target.files && event.target.files.length > 0) {
+          handleChange({ file: event.target.files[0] });
+        }
+      }
+    },
+    mutationResult,
+    isLoading,
+    handleChange
+  };
+};
+
+// src/hooks/modal/useModal/index.tsx
+import { useCallback as useCallback7, useState as useState6 } from "react";
+var useModal = ({
+  defaultVisible = false
+} = {}) => {
+  const [visible, setVisible] = useState6(defaultVisible);
+  const show = useCallback7(() => setVisible(true), [visible]);
+  const close = useCallback7(() => setVisible(false), [visible]);
+  return {
+    visible,
+    show,
+    close
+  };
+};
+
+// src/hooks/router/useRouterContext.ts
+import { useContext as useContext21 } from "react";
+
+// src/contexts/router/index.tsx
+import React17 from "react";
+var defaultProvider = {
+  useHistory: () => false,
+  useLocation: () => false,
+  useParams: () => ({}),
+  Prompt: () => null,
+  Link: () => null
+};
+var RouterContext = React17.createContext(defaultProvider);
+var RouterContextProvider = ({
+  children,
+  useHistory,
+  useLocation,
+  useParams,
+  Prompt,
+  Link,
+  routes
+}) => {
+  return /* @__PURE__ */ React17.createElement(RouterContext.Provider, {
+    value: {
+      useHistory,
+      useLocation,
+      useParams,
+      Prompt,
+      Link,
+      routes
+    }
+  }, children);
+};
+
+// src/hooks/router/useRouterContext.ts
+var useRouterContext = () => {
+  const { useHistory, useLocation, useParams, Prompt, Link, routes } = useContext21(RouterContext);
+  return {
+    useHistory,
+    useLocation,
+    useParams,
+    Prompt,
+    Link,
+    routes
+  };
+};
+
+// src/hooks/accessControl/useCan/index.ts
+import { useContext as useContext22 } from "react";
+import { useQuery as useQuery8 } from "react-query";
+
+// src/contexts/accessControl/index.tsx
+import React18 from "react";
+var AccessControlContext = React18.createContext(
+  {}
+);
+var AccessControlContextProvider = ({ can, children }) => {
+  return /* @__PURE__ */ React18.createElement(AccessControlContext.Provider, {
+    value: { can }
+  }, children);
+};
+
+// src/hooks/accessControl/useCan/index.ts
+var useCan = ({
+  action,
+  resource,
+  params,
+  queryOptions
+}) => {
+  const { can } = useContext22(AccessControlContext);
+  const queryResponse = useQuery8(
+    ["useCan", { action, resource, params }],
+    () => {
+      var _a;
+      return (_a = can == null ? void 0 : can({ action, resource, params })) != null ? _a : { can: true };
+    },
+    {
+      enabled: typeof can !== "undefined",
+      ...queryOptions,
+      retry: false
+    }
+  );
+  return typeof can === "undefined" ? { data: { can: true } } : queryResponse;
+};
+
+// src/hooks/accessControl/useCanWithoutCache.ts
+import { useContext as useContext23 } from "react";
+var useCanWithoutCache = () => {
+  const { can } = useContext23(AccessControlContext);
+  return { can };
+};
+
+// src/hooks/useSelect/index.ts
+import { useMemo as useMemo2, useState as useState7 } from "react";
+import uniqBy from "lodash/uniqBy";
+import debounce from "lodash/debounce";
+var useSelect = (props) => {
+  const [search, setSearch] = useState7([]);
+  const [options, setOptions] = useState7([]);
+  const [selectedOptions, setSelectedOptions] = useState7([]);
+  const {
+    resource,
+    sort,
+    filters = [],
+    optionLabel = "title",
+    optionValue = "id",
+    debounce: debounceValue = 300,
+    successNotification,
+    errorNotification,
+    defaultValueQueryOptions: defaultValueQueryOptionsFromProps,
+    queryOptions,
+    fetchSize,
+    liveMode,
+    defaultValue = [],
+    onLiveEvent,
+    onSearch: onSearchFromProp,
+    liveParams,
+    metaData,
+    dataProviderName
+  } = props;
+  const defaultValues = Array.isArray(defaultValue) ? defaultValue : [defaultValue];
+  const defaultValueQueryOnSuccess = (data) => {
+    setSelectedOptions(
+      data.data.map((item) => ({
+        label: item[optionLabel],
+        value: item[optionValue]
+      }))
+    );
+  };
+  const defaultValueQueryOptions = defaultValueQueryOptionsFromProps != null ? defaultValueQueryOptionsFromProps : queryOptions;
+  const defaultValueQueryResult = useMany({
+    resource,
+    ids: defaultValues,
+    queryOptions: {
+      enabled: defaultValues.length > 0,
+      ...defaultValueQueryOptions,
+      onSuccess: (data) => {
+        var _a;
+        defaultValueQueryOnSuccess(data);
+        (_a = defaultValueQueryOptions == null ? void 0 : defaultValueQueryOptions.onSuccess) == null ? void 0 : _a.call(defaultValueQueryOptions, data);
+      }
+    },
+    metaData,
+    liveMode: "off",
+    dataProviderName
+  });
+  const defaultQueryOnSuccess = (data) => {
+    setOptions(
+      data.data.map((item) => ({
+        label: item[optionLabel],
+        value: item[optionValue]
+      }))
+    );
+  };
+  const queryResult = useList({
+    resource,
+    config: {
+      sort,
+      filters: filters.concat(search),
+      pagination: fetchSize ? {
+        pageSize: fetchSize
+      } : void 0
+    },
+    queryOptions: {
+      ...queryOptions,
+      onSuccess: (data) => {
+        var _a;
+        defaultQueryOnSuccess(data);
+        (_a = queryOptions == null ? void 0 : queryOptions.onSuccess) == null ? void 0 : _a.call(queryOptions, data);
+      }
+    },
+    successNotification,
+    errorNotification,
+    metaData,
+    liveMode,
+    liveParams,
+    onLiveEvent,
+    dataProviderName
+  });
+  const onSearch = (value) => {
+    if (!value) {
+      setSearch([]);
+      return;
+    }
+    if (onSearchFromProp) {
+      setSearch(onSearchFromProp(value));
+    } else {
+      setSearch([
+        {
+          field: optionLabel,
+          operator: "contains",
+          value
+        }
+      ]);
+    }
+  };
+  return {
+    queryResult,
+    defaultValueQueryResult,
+    options: useMemo2(
+      () => uniqBy([...options, ...selectedOptions], "value"),
+      [options, selectedOptions]
+    ),
+    onSearch: debounce(onSearch, debounceValue)
+  };
+};
+
+// src/hooks/useTable/index.ts
+import { useMemo as useMemo3, useState as useState8, useEffect as useEffect5 } from "react";
+import differenceWith2 from "lodash/differenceWith";
+import isEqual from "lodash/isEqual";
+var defaultPermanentFilter = [];
+var defaultPermanentSorter = [];
+function useTable({
+  initialCurrent = 1,
+  initialPageSize = 10,
+  hasPagination = true,
+  initialSorter,
+  permanentSorter = defaultPermanentSorter,
+  defaultSetFilterBehavior = "merge",
+  initialFilter,
+  permanentFilter = defaultPermanentFilter,
+  syncWithLocation: syncWithLocationProp,
+  resource: resourceFromProp,
+  successNotification,
+  errorNotification,
+  queryOptions,
+  liveMode: liveModeFromProp,
+  onLiveEvent,
+  liveParams,
+  metaData,
+  dataProviderName
+} = {}) {
+  var _a;
+  const { syncWithLocation: syncWithLocationContext } = useSyncWithLocation();
+  const syncWithLocation = syncWithLocationProp != null ? syncWithLocationProp : syncWithLocationContext;
+  const { useLocation, useParams } = useRouterContext();
+  const { search, pathname } = useLocation();
+  const liveMode = useLiveMode(liveModeFromProp);
+  const { parsedCurrent, parsedPageSize, parsedSorter, parsedFilters } = parseTableParams(search);
+  const defaultCurrent = parsedCurrent || initialCurrent;
+  const defaultPageSize = parsedPageSize || initialPageSize;
+  const defaultSorter = parsedSorter.length ? parsedSorter : initialSorter;
+  const defaultFilter = parsedFilters.length ? parsedFilters : initialFilter;
+  const { resource: routeResourceName } = useParams();
+  const { push } = useNavigation();
+  const resourceWithRoute = useResourceWithRoute();
+  const resource = resourceWithRoute(resourceFromProp != null ? resourceFromProp : routeResourceName);
+  const [sorter, setSorter] = useState8(
+    setInitialSorters(permanentSorter, defaultSorter != null ? defaultSorter : [])
+  );
+  const [filters, setFilters] = useState8(
+    setInitialFilters(permanentFilter, defaultFilter != null ? defaultFilter : [])
+  );
+  const [current, setCurrent] = useState8(defaultCurrent);
+  const [pageSize, setPageSize] = useState8(defaultPageSize);
+  const createLinkForSyncWithLocation = ({
+    pagination: { current: current2, pageSize: pageSize2 },
+    sorter: sorter2,
+    filters: filters2
+  }) => {
+    const stringifyParams = stringifyTableParams({
+      pagination: {
+        pageSize: pageSize2,
+        current: current2
+      },
+      sorter: sorter2,
+      filters: filters2
+    });
+    return `${pathname}?${stringifyParams}`;
+  };
+  useEffect5(() => {
+    if (search === "") {
+      setCurrent(defaultCurrent);
+      setPageSize(defaultPageSize);
+      setSorter(setInitialSorters(permanentSorter, defaultSorter != null ? defaultSorter : []));
+      setFilters(setInitialFilters(permanentFilter, defaultFilter != null ? defaultFilter : []));
+    }
+  }, [search]);
+  useEffect5(() => {
+    if (syncWithLocation) {
+      const stringifyParams = stringifyTableParams({
+        ...hasPagination ? {
+          pagination: {
+            pageSize,
+            current
+          }
+        } : {},
+        sorter: differenceWith2(sorter, permanentSorter, isEqual),
+        filters: differenceWith2(filters, permanentFilter, isEqual)
+      });
+      return push(`${pathname}?${stringifyParams}`);
+    }
+  }, [syncWithLocation, current, pageSize, sorter, filters]);
+  const queryResult = useList({
+    resource: resource.name,
+    config: {
+      hasPagination,
+      pagination: { current, pageSize },
+      filters: unionFilters(permanentFilter, filters),
+      sort: unionSorters(permanentSorter, sorter)
+    },
+    queryOptions,
+    successNotification,
+    errorNotification,
+    metaData,
+    liveMode,
+    liveParams,
+    onLiveEvent,
+    dataProviderName
+  });
+  const setFiltersAsMerge = (newFilters) => {
+    setFilters(
+      (prevFilters) => unionFilters(permanentFilter, newFilters, prevFilters)
+    );
+  };
+  const setFiltersAsReplace = (newFilters) => {
+    setFilters(unionFilters(permanentFilter, newFilters));
+  };
+  const setFiltersWithSetter = (setter) => {
+    setFilters((prev) => unionFilters(permanentFilter, setter(prev)));
+  };
+  const setFiltersFn = (setterOrFilters, behavior = defaultSetFilterBehavior) => {
+    if (typeof setterOrFilters === "function") {
+      setFiltersWithSetter(setterOrFilters);
+    } else {
+      if (behavior === "replace") {
+        setFiltersAsReplace(setterOrFilters);
+      } else {
+        setFiltersAsMerge(setterOrFilters);
+      }
+    }
+  };
+  const setSortWithUnion = (newSorter) => {
+    setSorter(() => unionSorters(permanentSorter, newSorter));
+  };
+  const paginationValues = useMemo3(() => {
+    var _a2, _b;
+    if (hasPagination) {
+      return {
+        current,
+        setCurrent,
+        pageSize,
+        setPageSize,
+        pageCount: pageSize ? Math.ceil(((_b = (_a2 = queryResult.data) == null ? void 0 : _a2.total) != null ? _b : 0) / pageSize) : 1
+      };
+    }
+    return {
+      current: void 0,
+      setCurrent: void 0,
+      pageSize: void 0,
+      setPageSize: void 0,
+      pageCount: void 0
+    };
+  }, [hasPagination, current, pageSize, (_a = queryResult.data) == null ? void 0 : _a.total]);
+  return {
+    tableQueryResult: queryResult,
+    sorter,
+    setSorter: setSortWithUnion,
+    filters,
+    setFilters: setFiltersFn,
+    ...paginationValues,
+    createLinkForSyncWithLocation
+  };
+}
+
+// src/hooks/auditLog/useLog/index.ts
+import { useContext as useContext24 } from "react";
+import { useMutation as useMutation11, useQueryClient as useQueryClient7 } from "react-query";
+
+// src/contexts/auditLog/index.tsx
+import React19 from "react";
+var AuditLogContext = React19.createContext({});
+var AuditLogContextProvider = ({ create, get, update, children }) => {
+  return /* @__PURE__ */ React19.createElement(AuditLogContext.Provider, {
+    value: { create, get, update }
+  }, children);
+};
+
+// src/hooks/auditLog/useLog/index.ts
+var useLog = () => {
+  const queryClient = useQueryClient7();
+  const auditLogContext = useContext24(AuditLogContext);
+  const { resources } = useContext24(ResourceContext);
+  const {
+    data: identityData,
+    refetch,
+    isLoading
+  } = useGetIdentity({
+    queryOptions: {
+      enabled: !!auditLogContext
+    }
+  });
+  const log = useMutation11(
+    async (params) => {
+      var _a, _b, _c;
+      const resource = resources.find((p) => p.name === params.resource);
+      const logPermissions = (_b = (_a = resource == null ? void 0 : resource.options) == null ? void 0 : _a.auditLog) == null ? void 0 : _b.permissions;
+      if (logPermissions) {
+        if (!hasPermission(logPermissions, params.action)) {
+          return;
+        }
+      }
+      let authorData;
+      if (isLoading) {
+        authorData = await refetch();
+      }
+      return await ((_c = auditLogContext.create) == null ? void 0 : _c.call(auditLogContext, {
+        ...params,
+        author: identityData != null ? identityData : authorData == null ? void 0 : authorData.data
+      }));
+    }
+  );
+  const rename = useMutation11(
+    async (params) => {
+      var _a;
+      return await ((_a = auditLogContext.update) == null ? void 0 : _a.call(auditLogContext, params));
+    },
+    {
+      onSuccess: (data) => {
+        if (data == null ? void 0 : data.resource) {
+          const queryKey = queryKeys(data == null ? void 0 : data.resource);
+          queryClient.invalidateQueries(queryKey.logList());
+        }
+      }
+    }
+  );
+  return { log, rename };
+};
+
+// src/hooks/auditLog/useLogList/index.ts
+import { useContext as useContext25 } from "react";
+import { useQuery as useQuery9 } from "react-query";
+var useLogList = ({
+  resource,
+  action,
+  meta,
+  author,
+  metaData,
+  queryOptions
+}) => {
+  const { get } = useContext25(AuditLogContext);
+  const queryKey = queryKeys(resource, void 0, metaData);
+  const queryResponse = useQuery9(
+    queryKey.logList(meta),
+    () => {
+      var _a;
+      return (_a = get == null ? void 0 : get({
+        resource,
+        action,
+        author,
+        meta,
+        metaData
+      })) != null ? _a : Promise.resolve([]);
+    },
+    {
+      enabled: typeof get !== "undefined",
+      ...queryOptions,
+      retry: false
+    }
+  );
+  return queryResponse;
+};
+
+// src/hooks/invalidate/index.tsx
+import { useCallback as useCallback8 } from "react";
+import { useQueryClient as useQueryClient8 } from "react-query";
+var useInvalidate = () => {
+  const queryClient = useQueryClient8();
+  const invalidate = useCallback8(
+    ({
+      resource,
+      dataProviderName,
+      invalidates,
+      id
+    }) => {
+      if (invalidates === false) {
+        return;
+      }
+      const queryKey = queryKeys(resource, dataProviderName);
+      invalidates.forEach((key) => {
+        switch (key) {
+          case "all":
+            queryClient.invalidateQueries(queryKey.all);
+            break;
+          case "list":
+            queryClient.invalidateQueries(queryKey.list());
+            break;
+          case "many":
+            queryClient.invalidateQueries(queryKey.many());
+            break;
+          case "resourceAll":
+            queryClient.invalidateQueries(queryKey.resourceAll);
+            break;
+          case "detail":
+            queryClient.invalidateQueries(
+              queryKey.detail(id || "")
+            );
+            break;
+          default:
+            break;
+        }
+      });
+    },
+    []
+  );
+  return invalidate;
+};
+
+// src/hooks/breadcrumb/index.ts
+import { useContext as useContext26 } from "react";
+import humanizeString2 from "humanize-string";
+import warnOnce from "warn-once";
+var useBreadcrumb = () => {
+  var _a;
+  const { useParams } = useRouterContext();
+  const { i18nProvider } = useContext26(TranslationContext);
+  const translate = useTranslate();
+  const { resources, resource } = useResource();
+  const { action } = useParams();
+  const breadcrumbs = [];
+  if (!(resource == null ? void 0 : resource.name)) {
+    return { breadcrumbs };
+  }
+  const addBreadcrumb = (parentName) => {
+    var _a2;
+    const parentResource = resources.find(
+      (resource2) => resource2.name === parentName
+    );
+    if (parentResource) {
+      if (parentResource.parentName) {
+        addBreadcrumb(parentResource.parentName);
+      }
+      breadcrumbs.push({
+        label: (_a2 = parentResource.label) != null ? _a2 : translate(
+          `${parentResource.name}.${parentResource.name}`,
+          humanizeString2(parentResource.name)
+        ),
+        href: !!parentResource.list ? `/${parentResource.route}` : void 0,
+        icon: parentResource.icon
+      });
+    }
+  };
+  if (resource.parentName) {
+    addBreadcrumb(resource.parentName);
+  }
+  breadcrumbs.push({
+    label: (_a = resource.label) != null ? _a : translate(
+      `${resource.name}.${resource.name}`,
+      humanizeString2(resource.name)
+    ),
+    href: !!resource.list ? `/${resource.route}` : void 0,
+    icon: resource.icon
+  });
+  if (action) {
+    const key = `actions.${action}`;
+    const actionLabel = translate(key);
+    if (typeof i18nProvider !== "undefined" && actionLabel === key) {
+      warnOnce(
+        true,
+        `[useBreadcrumb]: Breadcrumb missing translate key for the "${action}" action. Please add "actions.${action}" key to your translation file.
+For more information, see https://refine.dev/docs/core/hooks/useBreadcrumb/#i18n-support`
+      );
+      breadcrumbs.push({
+        label: translate(`buttons.${action}`, humanizeString2(action))
+      });
+    } else {
+      breadcrumbs.push({
+        label: translate(key, humanizeString2(action))
+      });
+    }
+  }
+  return {
+    breadcrumbs
+  };
+};
+
+// src/hooks/menu/useMenu.tsx
+import React21 from "react";
+var useMenu = () => {
+  const { resources } = useResource();
+  const translate = useTranslate();
+  const { useLocation, useParams } = useRouterContext();
+  const location = useLocation();
+  const params = useParams();
+  const { hasDashboard } = useRefineContext();
+  const selectedKey = React21.useMemo(() => {
+    let selectedResource = resources.find(
+      (el) => (location == null ? void 0 : location.pathname) === `/${el.route}`
+    );
+    if (!selectedResource) {
+      selectedResource = resources.find(
+        (el) => (params == null ? void 0 : params.resource) === el.route
+      );
+    }
+    let _selectedKey;
+    if (selectedResource == null ? void 0 : selectedResource.route) {
+      _selectedKey = `/${selectedResource == null ? void 0 : selectedResource.route}`;
+    } else if (location.pathname === "/") {
+      _selectedKey = "/";
+    } else {
+      _selectedKey = location == null ? void 0 : location.pathname;
+    }
+    return _selectedKey;
+  }, [resources, location, params]);
+  const treeMenuItems = React21.useMemo(
+    () => resources.map((resource) => {
+      var _a, _b;
+      const route = `/${resource.route}`;
+      return {
+        ...resource,
+        icon: resource.icon,
+        route,
+        key: (_a = resource.key) != null ? _a : route,
+        label: (_b = resource.label) != null ? _b : translate(
+          `${resource.name}.${resource.name}`,
+          userFriendlyResourceName(resource.name, "plural")
+        )
+      };
+    }),
+    [resources, hasDashboard]
+  );
+  const menuItems = React21.useMemo(
+    () => createTreeView(treeMenuItems),
+    [treeMenuItems]
+  );
+  const crawlNestedKeys = React21.useCallback(
+    (currentKey, currentResources, isParent = false) => {
+      const currentElement = currentResources.find(
+        (el) => isParent ? el.name === currentKey : el.route === currentKey
+      );
+      if (currentElement) {
+        const keysArray = [];
+        if (isParent && currentElement.route) {
+          keysArray.unshift(...[currentElement.route]);
+        }
+        if (currentElement.parentName) {
+          keysArray.unshift(
+            ...crawlNestedKeys(
+              currentElement.parentName,
+              currentResources,
+              true
+            )
+          );
+        }
+        return keysArray;
+      }
+      return [];
+    },
+    []
+  );
+  const defaultOpenKeys = React21.useMemo(
+    () => crawlNestedKeys(selectedKey, treeMenuItems),
+    [selectedKey, treeMenuItems]
+  );
+  const values = React21.useMemo(() => {
+    const filterMenuItemsByListView = (menus) => {
+      return menus.reduce((menuItem, obj) => {
+        if (obj.children.length > 0)
+          return [
+            ...menuItem,
+            {
+              ...obj,
+              children: filterMenuItemsByListView(obj.children)
+            }
+          ];
+        else if (typeof obj.list !== "undefined")
+          return [...menuItem, obj];
+        return menuItem;
+      }, []);
+    };
+    return {
+      defaultOpenKeys,
+      selectedKey,
+      menuItems: filterMenuItemsByListView(menuItems)
+    };
+  }, [defaultOpenKeys, selectedKey, menuItems]);
+  return values;
+};
+
+// src/components/pages/error/index.tsx
+var ErrorComponent = () => {
+  const [errorMessage, setErrorMessage] = useState9();
+  const { push } = useNavigation();
+  const translate = useTranslate();
+  const actionTypes = ["edit", "create", "show"];
+  const { useParams } = useRouterContext();
+  const params = useParams();
+  const resource = useResourceWithRoute();
+  useEffect6(() => {
+    if (params.resource) {
+      const resourceFromRoute = resource(params.resource);
+      if (params.action && actionTypes.includes(params.action) && !resourceFromRoute[params.action]) {
+        setErrorMessage(
+          translate(
+            "pages.error.info",
+            {
+              action: params.action,
+              resource: params.resource
+            },
+            `You may have forgotten to add the "${params.action}" component to "${params.resource}" resource.`
+          )
+        );
+      }
+    }
+  }, [params]);
+  return /* @__PURE__ */ React22.createElement(React22.Fragment, null, /* @__PURE__ */ React22.createElement("h1", null, translate(
+    "pages.error.404",
+    void 0,
+    "Sorry, the page you visited does not exist."
+  )), errorMessage && /* @__PURE__ */ React22.createElement("p", null, errorMessage), /* @__PURE__ */ React22.createElement("button", {
+    onClick: () => push("/")
+  }, translate("pages.error.backHome", void 0, "Back Home")));
+};
+
+// src/components/pages/login/index.tsx
+import React23, { useState as useState10 } from "react";
+var LoginPage = () => {
+  const [username, setUsername] = useState10("");
+  const [password, setPassword] = useState10("");
+  const translate = useTranslate();
+  const { mutate: login } = useLogin();
+  return /* @__PURE__ */ React23.createElement(React23.Fragment, null, /* @__PURE__ */ React23.createElement("h1", null, translate("pages.login.title", "Sign in your account")), /* @__PURE__ */ React23.createElement("form", {
+    onSubmit: (e) => {
+      e.preventDefault();
+      login({ username, password });
+    }
+  }, /* @__PURE__ */ React23.createElement("table", null, /* @__PURE__ */ React23.createElement("tbody", null, /* @__PURE__ */ React23.createElement("tr", null, /* @__PURE__ */ React23.createElement("td", null, translate(
+    "pages.login.username",
+    void 0,
+    "username"
+  ), ":"), /* @__PURE__ */ React23.createElement("td", null, /* @__PURE__ */ React23.createElement("input", {
+    type: "text",
+    size: 20,
+    autoCorrect: "off",
+    spellCheck: false,
+    autoCapitalize: "off",
+    autoFocus: true,
+    required: true,
+    value: username,
+    onChange: (e) => setUsername(e.target.value)
+  }))), /* @__PURE__ */ React23.createElement("tr", null, /* @__PURE__ */ React23.createElement("td", null, translate(
+    "pages.login.password",
+    void 0,
+    "password"
+  ), ":"), /* @__PURE__ */ React23.createElement("td", null, /* @__PURE__ */ React23.createElement("input", {
+    type: "password",
+    required: true,
+    size: 20,
+    value: password,
+    onChange: (e) => setPassword(e.target.value)
+  }))))), /* @__PURE__ */ React23.createElement("br", null), /* @__PURE__ */ React23.createElement("input", {
+    type: "submit",
+    value: "login"
+  })));
+};
+
+// src/components/pages/ready/index.tsx
+import React24 from "react";
+var ReadyPage = () => {
+  return /* @__PURE__ */ React24.createElement(React24.Fragment, null, /* @__PURE__ */ React24.createElement("h1", null, "Welcome on board"), /* @__PURE__ */ React24.createElement("p", null, "Your configuration is completed."), /* @__PURE__ */ React24.createElement("p", null, "Now you can get started by adding your resources to the", " ", /* @__PURE__ */ React24.createElement("code", null, "`resources`"), " property of ", /* @__PURE__ */ React24.createElement("code", null, "`<Refine>`")), /* @__PURE__ */ React24.createElement("div", {
+    style: { display: "flex", gap: 8 }
+  }, /* @__PURE__ */ React24.createElement("a", {
+    href: "https://refine.dev",
+    target: "_blank",
+    rel: "noreferrer"
+  }, /* @__PURE__ */ React24.createElement("button", null, "Documentation")), /* @__PURE__ */ React24.createElement("a", {
+    href: "https://refine.dev/docs/examples/tutorial",
+    target: "_blank",
+    rel: "noreferrer"
+  }, /* @__PURE__ */ React24.createElement("button", null, "Examples")), /* @__PURE__ */ React24.createElement("a", {
+    href: "https://discord.gg/refine",
+    target: "_blank",
+    rel: "noreferrer"
+  }, /* @__PURE__ */ React24.createElement("button", null, "Community"))));
+};
+
+// src/components/containers/refine/index.tsx
+import React25 from "react";
+import {
+  QueryClientProvider,
+  QueryClient,
+  ReactQueryDevtools
+} from "react-query";
+
+// src/components/telemetry/index.tsx
+import { useEffect as useEffect7 } from "react";
+import { CompactEncrypt, importJWK } from "jose";
+
+// src/hooks/useTelemetryData/index.ts
+import { useContext as useContext27 } from "react";
+var REFINE_VERSION = "3.54.0";
+var useTelemetryData = () => {
+  const authContext = useContext27(AuthContext);
+  const auditLogContext = useContext27(AuditLogContext);
+  const liveContext = useContext27(LiveContext);
+  const routerContext = useContext27(RouterContext);
+  const dataContext = useContext27(DataContext);
+  const { i18nProvider } = useContext27(TranslationContext);
+  const notificationContext = useContext27(NotificationContext);
+  const accessControlContext = useContext27(AccessControlContext);
+  const { resources } = useResource();
+  const auth = authContext.isProvided;
+  const auditLog = !!auditLogContext.create || !!auditLogContext.get || !!auditLogContext.update;
+  const live = !!(liveContext == null ? void 0 : liveContext.publish) || !!(liveContext == null ? void 0 : liveContext.subscribe) || !!(liveContext == null ? void 0 : liveContext.unsubscribe);
+  const router = !!routerContext.useHistory || !!routerContext.Link || !!routerContext.Prompt || !!routerContext.useLocation || !!routerContext.useParams;
+  const data = !!dataContext;
+  const i18n = !!(i18nProvider == null ? void 0 : i18nProvider.changeLocale) || !!(i18nProvider == null ? void 0 : i18nProvider.getLocale) || !!(i18nProvider == null ? void 0 : i18nProvider.translate);
+  const notification = !!notificationContext.close || !!notificationContext.open;
+  const accessControl = !!accessControlContext.can;
+  return {
+    providers: {
+      auth,
+      auditLog,
+      live,
+      router,
+      data,
+      i18n,
+      notification,
+      accessControl
+    },
+    version: REFINE_VERSION,
+    resourceCount: resources.length
+  };
+};
+
+// src/components/telemetry/index.tsx
+var PUBLIC_KEY = {
+  kty: "RSA",
+  e: "AQAB",
+  use: "enc",
+  alg: "RSA-OAEP-256",
+  n: "glC_mSwk1VqaofnOPXK3HEC5njb4uHZM5_shFdQLRn_898dxVUMK7HkyOgoVOtEsNxDBjwK_KPbSEYX_lyfrJ6ONjnxPJ2_d0W_1ZwdwT_gr5ofFLz5Bm7WbVHcKDK1j5iMYsqUJbFVQ-KXzAswae2iiqzCBKLD4y-fLsIvOUGZliERMMi54hRPqVj6p0xhJEvH22jZ5rk48KJBNvjBBuLes1qk5cehirDHnh07A8Alr3Pe6Qk7xpyC_mUvMqX99JvYThyvjQMMPEXHLJY9m1g-sgHJPlMkxMoLUd5JI1v6QMLezhq2F-bNXiRgXJgT0ew3g-H_PKpWmMQmSRtgiEw"
+};
+var Telemetry = () => {
+  const payload = useTelemetryData();
+  useEffect7(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    (async () => {
+      const jwk = await importJWK(PUBLIC_KEY);
+      const encryptedPayload = await new CompactEncrypt(
+        new TextEncoder().encode(JSON.stringify(payload))
+      ).setProtectedHeader({ alg: "RSA-OAEP-256", enc: "A256GCM" }).encrypt(jwk);
+      fetch("https://telemetry.refine.dev/send", {
+        headers: {
+          Accept: "application/text",
+          "Content-Type": "application/text"
+        },
+        method: "POST",
+        body: encryptedPayload
+      });
+    })();
+  }, []);
+  return null;
+};
+
+// src/components/containers/refine/index.tsx
+var Refine = ({
+  authProvider,
+  dataProvider,
+  routerProvider,
+  notificationProvider,
+  accessControlProvider,
+  auditLogProvider,
+  resources: resourcesFromProps,
+  DashboardPage,
+  ReadyPage: ReadyPage2,
+  LoginPage: LoginPage2,
+  catchAll,
+  children,
+  liveProvider,
+  i18nProvider,
+  mutationMode = "pessimistic",
+  syncWithLocation = false,
+  warnWhenUnsavedChanges = false,
+  undoableTimeout = 5e3,
+  Title,
+  Layout,
+  Sider,
+  Header,
+  Footer,
+  OffLayoutArea,
+  reactQueryClientConfig,
+  reactQueryDevtoolConfig,
+  liveMode,
+  onLiveEvent,
+  disableTelemetry = false
+}) => {
+  var _a;
+  const queryClient = new QueryClient({
+    ...reactQueryClientConfig,
+    defaultOptions: {
+      ...reactQueryClientConfig == null ? void 0 : reactQueryClientConfig.defaultOptions,
+      queries: {
+        refetchOnWindowFocus: false,
+        keepPreviousData: true,
+        ...(_a = reactQueryClientConfig == null ? void 0 : reactQueryClientConfig.defaultOptions) == null ? void 0 : _a.queries
+      }
+    }
+  });
+  const notificationProviderContextValues = typeof notificationProvider === "function" ? notificationProvider() : notificationProvider != null ? notificationProvider : {};
+  const resources = [];
+  resourcesFromProps == null ? void 0 : resourcesFromProps.map((resource) => {
+    var _a2, _b, _c;
+    resources.push({
+      key: resource.key,
+      name: resource.name,
+      label: (_a2 = resource.options) == null ? void 0 : _a2.label,
+      icon: resource.icon,
+      route: (_c = (_b = resource.options) == null ? void 0 : _b.route) != null ? _c : routeGenerator(resource, resourcesFromProps),
+      canCreate: !!resource.create,
+      canEdit: !!resource.edit,
+      canShow: !!resource.show,
+      canDelete: resource.canDelete,
+      create: resource.create,
+      show: resource.show,
+      list: resource.list,
+      edit: resource.edit,
+      options: resource.options,
+      parentName: resource.parentName
+    });
+  });
+  if (resources.length === 0) {
+    return ReadyPage2 ? /* @__PURE__ */ React25.createElement(ReadyPage2, null) : /* @__PURE__ */ React25.createElement(ReadyPage, null);
+  }
+  const { RouterComponent = React25.Fragment } = routerProvider;
+  return /* @__PURE__ */ React25.createElement(QueryClientProvider, {
+    client: queryClient
+  }, /* @__PURE__ */ React25.createElement(NotificationContextProvider, {
+    ...notificationProviderContextValues
+  }, /* @__PURE__ */ React25.createElement(AuthContextProvider, {
+    ...authProvider != null ? authProvider : {},
+    isProvided: Boolean(authProvider)
+  }, /* @__PURE__ */ React25.createElement(DataContextProvider, {
+    ...dataProvider
+  }, /* @__PURE__ */ React25.createElement(LiveContextProvider, {
+    liveProvider
+  }, /* @__PURE__ */ React25.createElement(RouterContextProvider, {
+    ...routerProvider
+  }, /* @__PURE__ */ React25.createElement(ResourceContextProvider, {
+    resources
+  }, /* @__PURE__ */ React25.createElement(TranslationContextProvider, {
+    i18nProvider
+  }, /* @__PURE__ */ React25.createElement(AccessControlContextProvider, {
+    ...accessControlProvider != null ? accessControlProvider : {}
+  }, /* @__PURE__ */ React25.createElement(AuditLogContextProvider, {
+    ...auditLogProvider != null ? auditLogProvider : {}
+  }, /* @__PURE__ */ React25.createElement(UndoableQueueContextProvider, null, /* @__PURE__ */ React25.createElement(RefineContextProvider, {
+    mutationMode,
+    warnWhenUnsavedChanges,
+    syncWithLocation,
+    Title,
+    undoableTimeout,
+    catchAll,
+    DashboardPage,
+    LoginPage: LoginPage2,
+    Layout,
+    Sider,
+    Footer,
+    Header,
+    OffLayoutArea,
+    hasDashboard: !!DashboardPage,
+    liveMode,
+    onLiveEvent
+  }, /* @__PURE__ */ React25.createElement(UnsavedWarnContextProvider, null, /* @__PURE__ */ React25.createElement(RouterComponent, null, children, !disableTelemetry && /* @__PURE__ */ React25.createElement(Telemetry, null), /* @__PURE__ */ React25.createElement(RouteChangeHandler, null)))))))))))))), /* @__PURE__ */ React25.createElement(ReactQueryDevtools, {
+    initialIsOpen: false,
+    position: "bottom-right",
+    ...reactQueryDevtoolConfig
+  }));
+};
+
+// src/components/undoableQueue/index.tsx
+import { useEffect as useEffect8 } from "react";
+var UndoableQueue = ({ notifications }) => {
+  const translate = useTranslate();
+  const { notificationDispatch } = useCancelNotification();
+  const { open } = useNotification();
+  const cancelNotification = () => {
+    notifications.forEach((notificationItem) => {
+      if (notificationItem.isRunning === true) {
+        if (notificationItem.seconds === 0) {
+          notificationItem.doMutation();
+        }
+        if (!notificationItem.isSilent) {
+          open == null ? void 0 : open({
+            key: `${notificationItem.id}-${notificationItem.resource}-notification`,
+            type: "progress",
+            message: translate(
+              "notifications.undoable",
+              {
+                seconds: userFriendlySecond(
+                  notificationItem.seconds
+                )
+              },
+              `You have ${userFriendlySecond(
+                notificationItem.seconds
+              )} seconds to undo`
+            ),
+            cancelMutation: notificationItem.cancelMutation,
+            undoableTimeout: userFriendlySecond(
+              notificationItem.seconds
+            )
+          });
+        }
+        if (notificationItem.seconds > 0) {
+          setTimeout(() => {
+            notificationDispatch({
+              type: "DECREASE_NOTIFICATION_SECOND" /* DECREASE_NOTIFICATION_SECOND */,
+              payload: {
+                id: notificationItem.id,
+                seconds: notificationItem.seconds,
+                resource: notificationItem.resource
+              }
+            });
+          }, 1e3);
+        }
+      }
+    });
+  };
+  useEffect8(() => {
+    cancelNotification();
+  }, [notifications]);
+  return null;
+};
+
+// src/components/layoutWrapper/index.tsx
+import React27, { useEffect as useEffect9 } from "react";
+var LayoutWrapper = ({
+  children,
+  Layout: LayoutFromProps,
+  Sider: SiderFromProps,
+  Header: HeaderFromProps,
+  Title: TitleFromProps,
+  Footer: FooterFromProps,
+  OffLayoutArea: OffLayoutAreaFromProps
+}) => {
+  const { Layout, Footer, Header, Sider, Title, OffLayoutArea } = useRefineContext();
+  const LayoutToRender = LayoutFromProps != null ? LayoutFromProps : Layout;
+  return /* @__PURE__ */ React27.createElement(LayoutToRender, {
+    Sider: SiderFromProps != null ? SiderFromProps : Sider,
+    Header: HeaderFromProps != null ? HeaderFromProps : Header,
+    Footer: FooterFromProps != null ? FooterFromProps : Footer,
+    Title: TitleFromProps != null ? TitleFromProps : Title,
+    OffLayoutArea: OffLayoutAreaFromProps != null ? OffLayoutAreaFromProps : OffLayoutArea
+  }, children, /* @__PURE__ */ React27.createElement(UnsavedPrompt, null));
+};
+var UnsavedPrompt = () => {
+  const { Prompt } = useRouterContext();
+  const translate = useTranslate();
+  const { warnWhen, setWarnWhen } = useWarnAboutChange();
+  const warnWhenListener = (e) => {
+    e.preventDefault();
+    e.returnValue = translate(
+      "warnWhenUnsavedChanges",
+      "Are you sure you want to leave? You have unsaved changes."
+    );
+    return e.returnValue;
+  };
+  useEffect9(() => {
+    if (warnWhen) {
+      window.addEventListener("beforeunload", warnWhenListener);
+    }
+    return window.removeEventListener("beforeunload", warnWhenListener);
+  }, [warnWhen]);
+  return /* @__PURE__ */ React27.createElement(Prompt, {
+    when: warnWhen,
+    message: translate(
+      "warnWhenUnsavedChanges",
+      "Are you sure you want to leave? You have unsaved changes."
+    ),
+    setWarnWhen
+  });
+};
+
+// src/components/authenticated/index.tsx
+import React28 from "react";
+var Authenticated = ({
+  children,
+  fallback,
+  loading
+}) => {
+  const { isSuccess, isLoading, isError } = useAuthenticated();
+  const { replace } = useNavigation();
+  const { useLocation } = useRouterContext();
+  const { pathname, search } = useLocation();
+  if (isLoading) {
+    return /* @__PURE__ */ React28.createElement(React28.Fragment, null, loading) || null;
+  }
+  if (isError) {
+    if (!fallback) {
+      const toURL = `${pathname}${search}`;
+      if (!pathname.includes("/login")) {
+        replace(`/login?to=${encodeURIComponent(toURL)}`);
+      }
+      return null;
+    }
+    return /* @__PURE__ */ React28.createElement(React28.Fragment, null, fallback);
+  }
+  if (isSuccess) {
+    return /* @__PURE__ */ React28.createElement(React28.Fragment, null, children);
+  }
+  return null;
+};
+
+// src/components/routeChangeHandler/index.tsx
+import { useContext as useContext28, useEffect as useEffect10 } from "react";
+var RouteChangeHandler = () => {
+  const { useLocation } = useRouterContext();
+  const { checkAuth } = useContext28(AuthContext);
+  const location = useLocation();
+  useEffect10(() => {
+    checkAuth == null ? void 0 : checkAuth().catch(() => false);
+  }, [location == null ? void 0 : location.pathname]);
+  return null;
+};
+
+// src/components/canAccess/index.tsx
+import React29 from "react";
+var CanAccess = ({
+  resource,
+  action,
+  params,
+  fallback,
+  children,
+  ...rest
+}) => {
+  const { data } = useCan({
+    resource,
+    action,
+    params
+  });
+  if (data == null ? void 0 : data.can) {
+    if (React29.isValidElement(children)) {
+      const Children = React29.cloneElement(children, rest);
+      return Children;
+    }
+    return /* @__PURE__ */ React29.createElement(React29.Fragment, null, children);
+  }
+  if ((data == null ? void 0 : data.can) === false) {
+    return /* @__PURE__ */ React29.createElement(React29.Fragment, null, fallback != null ? fallback : null);
+  }
+  return null;
+};
+export {
+  Authenticated,
+  CanAccess,
+  ErrorComponent,
+  LayoutWrapper,
+  LoginPage,
+  ReadyPage,
+  Refine,
+  RouteChangeHandler,
+  UndoableQueue,
+  createTreeView,
+  file2Base64,
+  getDefaultFilter,
+  getDefaultSortOrder,
+  handleUseParams,
+  importCSVMapper,
+  parseTableParams,
+  parseTableParamsFromQuery,
+  routeGenerator,
+  setInitialFilters,
+  setInitialSorters,
+  stringifyTableParams,
+  unionFilters,
+  unionSorters,
+  useApiUrl,
+  useAuthenticated,
+  useBreadcrumb,
+  useCan,
+  useCanWithoutCache,
+  useCancelNotification,
+  useCheckError,
+  useCreate,
+  useCreateMany,
+  useCustom,
+  useCustomMutation,
+  useDataProvider,
+  useDelete,
+  useDeleteMany,
+  useExport,
+  useForm,
+  useGetIdentity,
+  useGetLocale,
+  useHandleNotification,
+  useImport,
+  useInvalidate,
+  useIsExistAuthentication,
+  useList,
+  useLiveMode,
+  useLog,
+  useLogList,
+  useLogin,
+  useLogout,
+  useMany,
+  useMenu,
+  useModal,
+  useMutationMode,
+  useNavigation,
+  useNotification,
+  useOne,
+  usePermissions,
+  usePublish,
+  useRedirectionAfterSubmission,
+  useRefineContext,
+  useResource,
+  useResourceSubscription,
+  useResourceWithRoute,
+  useRouterContext,
+  useSelect,
+  useSetLocale,
+  useShow,
+  useSubscription,
+  useSyncWithLocation,
+  useTable,
+  useTitle,
+  useTranslate,
+  useUpdate,
+  useUpdateMany,
+  useWarnAboutChange,
+  userFriendlyResourceName
+};
 //# sourceMappingURL=index.js.map
