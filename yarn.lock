@@ -2971,6 +2971,15 @@ react-is@^18.0.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
+react-query@emehmet/react-query-run:
+  version "1.0.2"
+  resolved "https://codeload.github.com/emehmet/react-query-run/tar.gz/34428fa6e6d23603dff78318c52e0a08e2d75021"
+  dependencies:
+    "@babel/runtime" "^7.5.5"
+    broadcast-channel "^3.4.1"
+    flatted "^3.2.6"
+    match-sorter "^6.0.2"
+
 "react-query@https://github.com/emehmet/react-query-run.git":
   version "1.0.0-semantic-release"
   resolved "https://github.com/emehmet/react-query-run.git#c6edd1d0fc41cc73e06bd7b658cd4acc2ad1ba8d"
