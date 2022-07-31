@@ -45,12 +45,12 @@
         "export-to-csv-fix-source-map": "^0.2.1",
         "humanize-string": "^2.1.0",
         "jose": "^4.8.3",
-        "react-query": "https://github.com/emehmet/react-query-run.git",
         "lodash": "^4.17.21",
         "lodash-es": "^4.17.21",
         "papaparse": "^5.3.0",
         "pluralize": "^8.0.0",
         "qs": "^6.10.1",
+        "react-query": "https://github.com/emehmet/react-query-run.git",
         "tslib": "^2.3.1",
         "warn-once": "^0.1.0"
     },

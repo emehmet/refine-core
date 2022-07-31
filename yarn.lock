@@ -2973,7 +2973,7 @@ react-is@^18.0.0:
 
 "react-query@https://github.com/emehmet/react-query-run.git":
   version "1.0.0-semantic-release"
-  resolved "https://github.com/emehmet/react-query-run.git#2a1504098f6d024f73f6a1dbcdb208b84f84b82a"
+  resolved "https://github.com/emehmet/react-query-run.git#c6edd1d0fc41cc73e06bd7b658cd4acc2ad1ba8d"
   dependencies:
     "@babel/runtime" "^7.5.5"
     broadcast-channel "^3.4.1"
